@@ -31,6 +31,7 @@ namespace XafAiExtensionsDataAnalysis.Module.BusinessObjects {
             // Place your initialization code here (https://docs.devexpress.com/eXpressAppFramework/112834/getting-started/in-depth-tutorial-winforms-webforms/business-model-design/initialize-a-property-after-creating-an-object-xpo?v=22.1).
         }
 
+        ReportDataV2 report;
         string reportTitle;
         string log;
         string prompt;
@@ -48,12 +49,19 @@ namespace XafAiExtensionsDataAnalysis.Module.BusinessObjects {
             get => log;
             set => SetPropertyValue(nameof(Log), ref log, value);
         }
-        
+
         [Size(SizeAttribute.DefaultStringMappingFieldSize)]
         public string ReportTitle
         {
             get => reportTitle;
             set => SetPropertyValue(nameof(ReportTitle), ref reportTitle, value);
+        }
+        
+        [Size(SizeAttribute.DefaultStringMappingFieldSize)]
+        public ReportDataV2 Report
+        {
+            get => report;
+            set => SetPropertyValue(nameof(Report), ref report, value);
         }
     }
 }

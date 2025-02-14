@@ -12,10 +12,10 @@ namespace XafAiExtensionsDataAnalysis.Module.AiTools
     public class RuntimeReportBuilder
     {
 
-        IObjectSpace objectSpace;
-        public RuntimeReportBuilder(IObjectSpace objectSpace)
+
+        public RuntimeReportBuilder()
         {
-            this.objectSpace = objectSpace;
+            
         }
         public CollectionDataSource GetDataSourceFromType(string TypeFullName)
         {

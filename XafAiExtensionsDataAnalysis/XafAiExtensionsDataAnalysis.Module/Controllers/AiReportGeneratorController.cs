@@ -1,13 +1,22 @@
 ﻿using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Actions;
+using DevExpress.ExpressApp.ReportsV2;
+using DevExpress.ExpressApp.Xpo;
+using DevExpress.Persistent.BaseImpl;
+using DevExpress.PivotGrid.OLAP.AdoWrappers;
+using DevExpress.Xpo;
 using Microsoft.Extensions.AI;
+using Microsoft.Extensions.DependencyInjection;
 using OpenAI;
+using System.Text.Json;
+using XafAiExtensionsDataAnalysis.Module.AiTools;
 using XafAiExtensionsDataAnalysis.Module.BusinessObjects;
 
 
 namespace XafAiExtensionsDataAnalysis.Module.Controllers {
     // For more typical usage scenarios, be sure to check out https://docs.devexpress.com/eXpressAppFramework/DevExpress.ExpressApp.ViewController.
     public partial class AiReportGeneratorController : ObjectViewController<DetailView,AiGeneratedReport> {
+        SimpleAction PreviewReport;
         SimpleAction GenerateReport;
         // Use CodeRush to create Controllers and Actions with a few keystrokes.
         // https://docs.devexpress.com/CodeRushForRoslyn/403133/
@@ -16,9 +25,29 @@ namespace XafAiExtensionsDataAnalysis.Module.Controllers {
             InitializeComponent();
             GenerateReport = new SimpleAction(this, "Generate Report", "View");
             GenerateReport.Execute += GenerateReport_Execute;
+
+            PreviewReport = new SimpleAction(this, "MyAction", "View");
+            PreviewReport.Execute += PreviewReport_Execute;
             
+
         }
-        static IChatClient CurrentClient;
+        private void PreviewReport_Execute(object sender, SimpleActionExecuteEventArgs e)
+        {
+            ReportServiceController controller = Frame.GetController<ReportServiceController>();
+            if (controller != null)
+            {
+                var reportStorage = Application.ServiceProvider.GetRequiredService<IReportStorage>();
+                using IObjectSpace objectSpace = Application.CreateObjectSpace(typeof(ReportDataV2));
+                IReportDataV2 reportData = objectSpace.FirstOrDefault<ReportDataV2>(data => data.DisplayName == "Contacts Report");
+                string handle = reportStorage.GetReportContainerHandle(reportData);
+
+                
+                controller.ShowPreview(handle);
+            }
+            ;
+        }
+       
+            static IChatClient CurrentClient;
         static string OpenAiModelId = "gpt-4o";
 
 
@@ -37,16 +66,28 @@ namespace XafAiExtensionsDataAnalysis.Module.Controllers {
                 List<ChatMessage> chatMessages = new List<ChatMessage>();
             
 
-                chatMessages.Add(new ChatMessage(ChatRole.User, "Which countries have we mention on this conversation"));
-
-                foreach (ChatMessage chatMessage in chatMessages)
-                {
-                    Console.WriteLine($"{chatMessage.Role}:{chatMessage.ToString()}");
-                }
+                chatMessages.Add(new ChatMessage(ChatRole.System, reportGeneratorAI.SystemPrompt));
+                chatMessages.Add(new ChatMessage(ChatRole.User, $"The report MUST be generated using this Schema {businessSchema.Schema}, the datasource must be one of the entities on this schema, use the TypeFullName property to set the value of the datasource"));
+                chatMessages.Add(new ChatMessage(ChatRole.User, CurrentAiGeneratedReport.Prompt));
 
 
 
-                var Result = await CurrentClient.CompleteAsync(chatMessages);
+                var AiAnswer = await CurrentClient.CompleteAsync<ReportRequest>(chatMessages);
+                RuntimeReportBuilder runtimeReportBuilder = new RuntimeReportBuilder();
+                var Report=runtimeReportBuilder.CreateReport(AiAnswer.Result);
+                MemoryStream stream = new();
+                Report.SaveLayoutToXml(stream);
+                stream.Seek(0, SeekOrigin.Begin);
+                var XpOs=this.ObjectSpace as XPObjectSpace;
+                Type type = XpOs.TypesInfo.PersistentTypes.FirstOrDefault(t => t.FullName == AiAnswer.Result.DataSource).Type;
+                ReportDataV2 reportData=new ReportDataV2(XpOs.Session, type);
+                reportData.Content = stream.ToArray();
+                reportData.DisplayName = AiAnswer.Result.ReportTitle;
+                CurrentAiGeneratedReport.ReportTitle = AiAnswer.Result.ReportTitle;
+                CurrentAiGeneratedReport.Report = reportData;
+            
+                CurrentAiGeneratedReport.Log ="Report Successfully Generated"+System.Environment.NewLine+JsonSerializer.Serialize(AiAnswer.Usage);
+                this.ObjectSpace.CommitChanges();
             }
             catch (Exception)
             {
