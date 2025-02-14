@@ -11,7 +11,6 @@ using DevExpress.Persistent.BaseImpl;
 using DevExpress.Persistent.BaseImpl.PermissionPolicy;
 using XafAiExtensionsDataAnalysis.Module.BusinessObjects;
 using Microsoft.Extensions.DependencyInjection;
-using YourNamespace.Module.BusinessObjects;
 
 namespace XafAiExtensionsDataAnalysis.Module.DatabaseUpdate;
 
@@ -63,6 +62,14 @@ public class Updater : ModuleUpdater {
 
         ObjectSpace.CommitChanges(); //This line persists created object(s).
 #endif
+
+        if (ObjectSpace.GetObjectsCount(typeof(BusinessSchema), null) == 0)
+        {
+            BusinessSchema singleton = ObjectSpace.CreateObject<BusinessSchema>();
+            singleton.Schema = "";
+
+        }
+        ObjectSpace.CommitChanges(); //This line persists created object(s).
 
         ObjectSpace.GenerateDataIfEmpty();
     }

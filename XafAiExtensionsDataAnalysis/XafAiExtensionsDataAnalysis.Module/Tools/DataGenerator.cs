@@ -1,13 +1,12 @@
-﻿using DevExpress.Xpo;
-using DevExpress.ExpressApp;
-using DevExpress.Persistent.Base;
-using DevExpress.Persistent.BaseImpl;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using DevExpress.ExpressApp;
+using System.Linq;
+using XafAiExtensionsDataAnalysis.Module.BusinessObjects;
 
-namespace YourNamespace.Module.BusinessObjects
+namespace XafAiExtensionsDataAnalysis.Module.Tools
 {
+    /// <summary>
+    /// Generates sample data for the application.
+    /// </summary>
     public class DataGenerator
     {
         private readonly Random _random = new Random(42);
@@ -18,6 +17,9 @@ namespace YourNamespace.Module.BusinessObjects
             _objectSpace = objectSpace;
         }
 
+        /// <summary>
+        /// Generates sample data for countries, categories, products, customers, and invoices.
+        /// </summary>
         public void GenerateData()
         {
             GenerateCountries();
@@ -173,222 +175,6 @@ namespace YourNamespace.Module.BusinessObjects
             detail.UnitPrice = product.UnitPrice;
             detail.LineTotal = product.UnitPrice * quantity;
             return detail;
-        }
-    }
-
-    // Extension method to help with data initialization
-    public static class DataGeneratorExtensions
-    {
-        public static void GenerateDataIfEmpty(this IObjectSpace objectSpace)
-        {
-            if (!objectSpace.GetObjects<Customer>().Any())
-            {
-                var generator = new DataGenerator(objectSpace);
-                generator.GenerateData();
-            }
-        }
-    }
-    [DefaultClassOptions]
-    public class Customer : BaseObject
-    {
-        public Customer(Session session) : base(session) { }
-
-        private string name;
-        [Size(255)]
-        public string Name
-        {
-            get => name;
-            set => SetPropertyValue(nameof(Name), ref name, value);
-        }
-
-        private string email;
-        [Size(255)]
-        public string Email
-        {
-            get => email;
-            set => SetPropertyValue(nameof(Email), ref email, value);
-        }
-
-        private string phone;
-        [Size(50)]
-        public string Phone
-        {
-            get => phone;
-            set => SetPropertyValue(nameof(Phone), ref phone, value);
-        }
-
-        private Country country;
-        [Association("Country-Customers")]
-        public Country Country
-        {
-            get => country;
-            set => SetPropertyValue(nameof(Country), ref country, value);
-        }
-
-        [Association("Customer-Invoices")]
-        public XPCollection<InvoiceHeader> Invoices
-        {
-            get => GetCollection<InvoiceHeader>(nameof(Invoices));
-        }
-    }
-
-    [DefaultClassOptions]
-    public class Country : BaseObject
-    {
-        public Country(Session session) : base(session) { }
-
-        private string name;
-        [Size(255)]
-        public string Name
-        {
-            get => name;
-            set => SetPropertyValue(nameof(Name), ref name, value);
-        }
-
-        private string code;
-        [Size(2)]
-        public string Code
-        {
-            get => code;
-            set => SetPropertyValue(nameof(Code), ref code, value);
-        }
-
-        [Association("Country-Customers")]
-        public XPCollection<Customer> Customers
-        {
-            get => GetCollection<Customer>(nameof(Customers));
-        }
-    }
-
-    [DefaultClassOptions]
-    public class InvoiceHeader : BaseObject
-    {
-        public InvoiceHeader(Session session) : base(session) { }
-
-        private DateTime invoiceDate;
-        public DateTime InvoiceDate
-        {
-            get => invoiceDate;
-            set => SetPropertyValue(nameof(InvoiceDate), ref invoiceDate, value);
-        }
-
-        private Customer customer;
-        [Association("Customer-Invoices")]
-        public Customer Customer
-        {
-            get => customer;
-            set => SetPropertyValue(nameof(Customer), ref customer, value);
-        }
-
-        private decimal totalAmount;
-        public decimal TotalAmount
-        {
-            get => totalAmount;
-            set => SetPropertyValue(nameof(TotalAmount), ref totalAmount, value);
-        }
-
-        [Association("Invoice-Details")]
-        public XPCollection<InvoiceDetail> Details
-        {
-            get => GetCollection<InvoiceDetail>(nameof(Details));
-        }
-    }
-
-    [DefaultClassOptions]
-    public class InvoiceDetail : BaseObject
-    {
-        public InvoiceDetail(Session session) : base(session) { }
-
-        private InvoiceHeader invoice;
-        [Association("Invoice-Details")]
-        public InvoiceHeader Invoice
-        {
-            get => invoice;
-            set => SetPropertyValue(nameof(Invoice), ref invoice, value);
-        }
-
-        private Product product;
-        [Association("Product-InvoiceDetails")]
-        public Product Product
-        {
-            get => product;
-            set => SetPropertyValue(nameof(Product), ref product, value);
-        }
-
-        private int quantity;
-        public int Quantity
-        {
-            get => quantity;
-            set => SetPropertyValue(nameof(Quantity), ref quantity, value);
-        }
-
-        private decimal unitPrice;
-        public decimal UnitPrice
-        {
-            get => unitPrice;
-            set => SetPropertyValue(nameof(UnitPrice), ref unitPrice, value);
-        }
-
-        private decimal lineTotal;
-        public decimal LineTotal
-        {
-            get => lineTotal;
-            set => SetPropertyValue(nameof(LineTotal), ref lineTotal, value);
-        }
-    }
-
-    [DefaultClassOptions]
-    public class Product : BaseObject
-    {
-        public Product(Session session) : base(session) { }
-
-        private string name;
-        [Size(255)]
-        public string Name
-        {
-            get => name;
-            set => SetPropertyValue(nameof(Name), ref name, value);
-        }
-
-        private decimal unitPrice;
-        public decimal UnitPrice
-        {
-            get => unitPrice;
-            set => SetPropertyValue(nameof(UnitPrice), ref unitPrice, value);
-        }
-
-        private ProductCategory category;
-        [Association("Category-Products")]
-        public ProductCategory Category
-        {
-            get => category;
-            set => SetPropertyValue(nameof(Category), ref category, value);
-        }
-
-        [Association("Product-InvoiceDetails")]
-        public XPCollection<InvoiceDetail> InvoiceDetails
-        {
-            get => GetCollection<InvoiceDetail>(nameof(InvoiceDetails));
-        }
-    }
-
-    [DefaultClassOptions]
-    public class ProductCategory : BaseObject
-    {
-        public ProductCategory(Session session) : base(session) { }
-
-        private string name;
-        [Size(255)]
-        public string Name
-        {
-            get => name;
-            set => SetPropertyValue(nameof(Name), ref name, value);
-        }
-
-        [Association("Category-Products")]
-        public XPCollection<Product> Products
-        {
-            get => GetCollection<Product>(nameof(Products));
         }
     }
 }

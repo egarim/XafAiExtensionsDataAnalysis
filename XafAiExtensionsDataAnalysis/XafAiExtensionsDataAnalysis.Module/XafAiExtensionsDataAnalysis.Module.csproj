@@ -45,4 +45,17 @@
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.5.1" />
   </ItemGroup>
+
+	<!--Microsoft.Extensions.AI-->
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.AI" Version="9.0.1-preview.1.24570.5" />
+		<PackageReference Include="Microsoft.Extensions.AI.Abstractions" Version="9.0.1-preview.1.24570.5" />
+
+		<!--Tensors for proximity search-->
+		<PackageReference Include="System.Numerics.Tensors" Version="9.0.0" />
+		<!-- Ollama Implementation -->
+		<PackageReference Include="Microsoft.Extensions.AI.Ollama" Version="9.0.1-preview.1.24570.5" />
+		<!-- OpenAi Implementation -->
+		<PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="9.0.1-preview.1.24570.5" />
+	</ItemGroup>
 </Project>
