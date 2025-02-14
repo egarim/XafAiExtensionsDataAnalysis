@@ -26,7 +26,8 @@ namespace XafAiExtensionsDataAnalysis.Module.Tools
                 var entity = new OrmEntityDto
                 {
                     EntityName = type.Name,
-                    Description = type.GetCustomAttribute<DescriptionAttribute>()?.Description
+                    Description = type.GetCustomAttribute<DescriptionAttribute>()?.Description,
+                    TypeFullName = type.FullName
                 };
 
                 // Analyze properties
@@ -41,6 +42,7 @@ namespace XafAiExtensionsDataAnalysis.Module.Tools
                     {
                         Name = prop.Name,
                         Type = GetFriendlyTypeName(prop.PropertyType),
+                        TypeFullName = prop.PropertyType.FullName,
                         Description = prop.GetCustomAttribute<DescriptionAttribute>()?.Description,
                         IsRequired = !IsNullableType(prop.PropertyType)
                     };
@@ -73,11 +75,13 @@ namespace XafAiExtensionsDataAnalysis.Module.Tools
                         {
                             relationship.TargetEntity = prop.PropertyType.GetGenericArguments()[0].Name;
                             relationship.RelationType = RelationshipType.OneToMany;
+                            relationship.RelationShipTypeName=nameof(RelationshipType.OneToMany);
                         }
                         else
                         {
                             relationship.TargetEntity = prop.PropertyType.Name;
                             relationship.RelationType = RelationshipType.ManyToOne;
+                            relationship.RelationShipTypeName = nameof(RelationshipType.ManyToOne);
                         }
 
                         entity.Relationships.Add(relationship);

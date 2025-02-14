@@ -13,6 +13,7 @@ namespace XafAiExtensionsDataAnalysis.Module.Tools
     {
         public string EntityName { get; set; }
         public string Description { get; set; }
+        public string TypeFullName { get; set; }
         public List<OrmPropertyDto> Properties { get; set; } = new();
         public List<OrmRelationshipDto> Relationships { get; set; } = new();
     }

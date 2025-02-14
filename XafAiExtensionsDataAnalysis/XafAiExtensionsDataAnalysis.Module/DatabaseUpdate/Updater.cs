@@ -11,6 +11,7 @@ using DevExpress.Persistent.BaseImpl;
 using DevExpress.Persistent.BaseImpl.PermissionPolicy;
 using XafAiExtensionsDataAnalysis.Module.BusinessObjects;
 using Microsoft.Extensions.DependencyInjection;
+using XafAiExtensionsDataAnalysis.Module.Tools;
 
 namespace XafAiExtensionsDataAnalysis.Module.DatabaseUpdate;
 

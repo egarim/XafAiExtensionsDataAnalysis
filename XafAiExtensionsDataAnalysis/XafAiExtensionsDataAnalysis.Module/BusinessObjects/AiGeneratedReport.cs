@@ -20,10 +20,10 @@ namespace XafAiExtensionsDataAnalysis.Module.BusinessObjects {
     //[DefaultListViewOptions(MasterDetailMode.ListViewOnly, false, NewItemRowPosition.None)]
     //[Persistent("DatabaseTableName")]
     // Specify more UI options using a declarative approach (https://docs.devexpress.com/eXpressAppFramework/112701/business-model-design-orm/data-annotations-in-data-model).
-    public class ReportGeneratorAI : BaseObject { // Inherit from a different class to provide a custom primary key, concurrency and deletion behavior, etc. (https://docs.devexpress.com/eXpressAppFramework/113146/business-model-design-orm/business-model-design-with-xpo/base-persistent-classes).
+    public class AiGeneratedReport : BaseObject { // Inherit from a different class to provide a custom primary key, concurrency and deletion behavior, etc. (https://docs.devexpress.com/eXpressAppFramework/113146/business-model-design-orm/business-model-design-with-xpo/base-persistent-classes).
         // Use CodeRush to create XPO classes and properties with a few keystrokes.
         // https://docs.devexpress.com/CodeRushForRoslyn/118557
-        public ReportGeneratorAI(Session session)
+        public AiGeneratedReport(Session session)
             : base(session) {
         }
         public override void AfterConstruction() {
@@ -31,21 +31,29 @@ namespace XafAiExtensionsDataAnalysis.Module.BusinessObjects {
             // Place your initialization code here (https://docs.devexpress.com/eXpressAppFramework/112834/getting-started/in-depth-tutorial-winforms-webforms/business-model-design/initialize-a-property-after-creating-an-object-xpo?v=22.1).
         }
 
-        string systemPrompt;
+        string reportTitle;
+        string log;
+        string prompt;
 
         [Size(SizeAttribute.Unlimited)]
-        public string SystemPrompt
+        public string Prompt
         {
-            get => systemPrompt;
-            set => SetPropertyValue(nameof(SystemPrompt), ref systemPrompt, value);
+            get => prompt;
+            set => SetPropertyValue(nameof(Prompt), ref prompt, value);
         }
-        [Association("ReportGeneratorAI-ReportGeneratorExamples")]
-        public XPCollection<ReportGeneratorAIExample> ReportGeneratorExamples
+
+        [Size(SizeAttribute.Unlimited)]
+        public string Log
         {
-            get
-            {
-                return GetCollection<ReportGeneratorAIExample>(nameof(ReportGeneratorExamples));
-            }
+            get => log;
+            set => SetPropertyValue(nameof(Log), ref log, value);
+        }
+        
+        [Size(SizeAttribute.DefaultStringMappingFieldSize)]
+        public string ReportTitle
+        {
+            get => reportTitle;
+            set => SetPropertyValue(nameof(ReportTitle), ref reportTitle, value);
         }
     }
 }

@@ -11,6 +11,7 @@ namespace XafAiExtensionsDataAnalysis.Module.Tools
         public string SourceEntity { get; set; }
         public string TargetEntity { get; set; }
         public RelationshipType RelationType { get; set; }
+        public string RelationShipTypeName { get; set; }
         public string AssociationName { get; set; }
     }
 }

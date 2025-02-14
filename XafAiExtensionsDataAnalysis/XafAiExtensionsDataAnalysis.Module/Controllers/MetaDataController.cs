@@ -20,7 +20,7 @@ using XafAiExtensionsDataAnalysis.Module.Tools;
 
 namespace XafAiExtensionsDataAnalysis.Module.Controllers {
     // For more typical usage scenarios, be sure to check out https://docs.devexpress.com/eXpressAppFramework/DevExpress.ExpressApp.ViewController.
-    public partial class MetaDataController : ViewController {
+    public partial class MetaDataController : ObjectViewController<DetailView,BusinessSchema> {
         SimpleAction GenerateMetadata;
         // Use CodeRush to create Controllers and Actions with a few keystrokes.
         // https://docs.devexpress.com/CodeRushForRoslyn/403133/
