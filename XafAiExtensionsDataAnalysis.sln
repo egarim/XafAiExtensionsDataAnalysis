@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XafAiExtensionsDataAnalysis
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XafAiExtensionsDataAnalysis.Win", "XafAiExtensionsDataAnalysis\XafAiExtensionsDataAnalysis.Win\XafAiExtensionsDataAnalysis.Win.csproj", "{505ED9B2-6517-499C-AA02-6A64EA49B9F9}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

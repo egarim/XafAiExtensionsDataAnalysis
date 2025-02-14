@@ -10,10 +10,17 @@
     <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Examples\Reports\CustomerBuyingBehaviourAnalysis\Image.jpg" />
+    <None Remove="Examples\Reports\CustomerBuyingBehaviourAnalysis\Prompt.txt" />
+    <None Remove="Examples\Reports\CustomerBuyingBehaviourAnalysis\request.json" />
     <None Remove="Model.DesignedDiffs.xafml" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Examples\Reports\CustomerBuyingBehaviourAnalysis\Image.jpg" />
+    <EmbeddedResource Include="Examples\Reports\CustomerBuyingBehaviourAnalysis\Prompt.txt" />
+    <EmbeddedResource Include="Examples\Reports\CustomerBuyingBehaviourAnalysis\request.json" />
     <EmbeddedResource Include="Model.DesignedDiffs.xafml" />
+    <EmbeddedResource Include="Prompts\ReportGeneratorAISystemPrompt.txt" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="DevExpress.ExpressApp" Version="24.2.*" />

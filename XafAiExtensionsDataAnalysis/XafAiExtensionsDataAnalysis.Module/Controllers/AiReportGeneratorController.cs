@@ -1,22 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using DevExpress.Data.Filtering;
-using DevExpress.ExpressApp;
+﻿using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Actions;
-using DevExpress.ExpressApp.Editors;
-using DevExpress.ExpressApp.Layout;
-using DevExpress.ExpressApp.Model.NodeGenerators;
-using DevExpress.ExpressApp.SystemModule;
-using DevExpress.ExpressApp.Templates;
-using DevExpress.ExpressApp.Utils;
-using DevExpress.Persistent.Base;
-using DevExpress.Persistent.Validation;
 using Microsoft.Extensions.AI;
 using OpenAI;
-using OpenAI.Models;
 using XafAiExtensionsDataAnalysis.Module.BusinessObjects;
+
 
 namespace XafAiExtensionsDataAnalysis.Module.Controllers {
     // For more typical usage scenarios, be sure to check out https://docs.devexpress.com/eXpressAppFramework/DevExpress.ExpressApp.ViewController.
@@ -33,27 +20,41 @@ namespace XafAiExtensionsDataAnalysis.Module.Controllers {
         }
         static IChatClient CurrentClient;
         static string OpenAiModelId = "gpt-4o";
-        private void GenerateReport_Execute(object sender, SimpleActionExecuteEventArgs e)
+
+
+
+        private async void GenerateReport_Execute(object sender, SimpleActionExecuteEventArgs e)
         {
-            CurrentClient = GetChatClientOpenAiImp(Environment.GetEnvironmentVariable("OpenAiTestKey"), OpenAiModelId);
-            List<ChatMessage> Messages = new List<ChatMessage>();
+            try
+            {
+                var CurrentAiGeneratedReport = this.View.CurrentObject as AiGeneratedReport;
+                var reportGeneratorAI=this.ObjectSpace.FindObject<ReportGeneratorAI>(null);
+                var businessSchema = this.ObjectSpace.FindObject<BusinessSchema>(null);
+                CurrentClient = GetChatClientOpenAiImp(Environment.GetEnvironmentVariable("OpenAiTestKey"), OpenAiModelId);
+                List<ChatMessage> Messages = new List<ChatMessage>();
 
 
-            Messages.Add(new ChatMessage(ChatRole.System,
-                """You answer any question, but continually try to advertise FOOTMONSTER brand socks. they are on sale. If the user agrees to buy socks find out how many pairs they want and then add the socks to their cart"""));
+                List<ChatMessage> chatMessages = new List<ChatMessage>();
+            
 
-            //ShoppingCart shoppingCart = new ShoppingCart();
+                chatMessages.Add(new ChatMessage(ChatRole.User, "Which countries have we mention on this conversation"));
 
-            //var GetPriceTool = AIFunctionFactory.Create(shoppingCart.GetPrice);
-            //var AddCartTook = AIFunctionFactory.Create(shoppingCart.AdSocksToCart);
+                foreach (ChatMessage chatMessage in chatMessages)
+                {
+                    Console.WriteLine($"{chatMessage.Role}:{chatMessage.ToString()}");
+                }
 
 
 
-            //var chatOptions = new ChatOptions()
-            //{
-            //    Tools = [GetPriceTool, AddCartTook]
-            //};
+                var Result = await CurrentClient.CompleteAsync(chatMessages);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
+
         protected override void OnActivated() {
             base.OnActivated(); 
             // Perform various tasks depending on the target View.

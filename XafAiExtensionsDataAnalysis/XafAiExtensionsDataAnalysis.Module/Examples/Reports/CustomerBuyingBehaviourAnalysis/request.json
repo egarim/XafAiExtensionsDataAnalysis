@@ -1,0 +1,91 @@
+{
+  "reportTitle": "Customer Buying Behavior Analysis",
+  "dataSource": "ReportsTest.Customer",
+  "columns": [
+    {
+      "fieldName": "Name",
+      "headerText": "Customer Name",
+      "width": 200,
+      "format": null
+    },
+    {
+      "fieldName": "Country.Name",
+      "headerText": "Country",
+      "width": 150,
+      "format": null
+    },
+    {
+      "fieldName": "PurchaseCount",
+      "headerText": "Total Orders",
+      "width": 120,
+      "format": null
+    },
+    {
+      "fieldName": "TotalPurchaseValue",
+      "headerText": "Lifetime Value",
+      "width": 150,
+      "format": null
+    },
+    {
+      "fieldName": "AverageOrderValue",
+      "headerText": "Avg Order Value",
+      "width": 150,
+      "format": null
+    }
+  ],
+  "grouping": {
+    "fieldName": "Country.Name",
+    "showGroupSummary": true,
+    "subGroups": null,
+    "dateGroupInterval": null,
+    "dateFormat": null
+  },
+  "calculatedFields": [
+    {
+      "name": "PurchaseCount",
+      "expression": "[Invoices].Count()",
+      "dataMember": null,
+      "formatString": "{0:N0}",
+      "summaryFunction": null
+    },
+    {
+      "name": "TotalPurchaseValue",
+      "expression": "[Invoices].Sum([TotalAmount])",
+      "dataMember": null,
+      "formatString": "{0:C2}",
+      "summaryFunction": null
+    },
+    {
+      "name": "AverageOrderValue",
+      "expression": "Iif([Invoices].Count() \u003E 0, [Invoices].Sum([TotalAmount]) / [Invoices].Count(), 0)",
+      "dataMember": null,
+      "formatString": "{0:C2}",
+      "summaryFunction": null
+    }
+  ],
+  "summaryOptions": [
+    {
+      "fieldName": "PurchaseCount",
+      "function": "Sum",
+      "formatString": null,
+      "showInGroupFooter": true,
+      "showInReportFooter": true
+    },
+    {
+      "fieldName": "TotalPurchaseValue",
+      "function": "Sum",
+      "formatString": null,
+      "showInGroupFooter": true,
+      "showInReportFooter": true
+    },
+    {
+      "fieldName": "AverageOrderValue",
+      "function": "Avg",
+      "formatString": null,
+      "showInGroupFooter": true,
+      "showInReportFooter": true
+    }
+  ],
+  "evenStyle": null,
+  "oddStyle": null
+}

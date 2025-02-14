@@ -12,6 +12,13 @@ using DevExpress.Persistent.BaseImpl.PermissionPolicy;
 using XafAiExtensionsDataAnalysis.Module.BusinessObjects;
 using Microsoft.Extensions.DependencyInjection;
 using XafAiExtensionsDataAnalysis.Module.Tools;
+using System.Reflection;
+using System.Drawing;
+using Microsoft.Extensions.Options;
+using XafAiExtensionsDataAnalysis.Module.AiTools;
+using System.Text.Json.Nodes;
+using System.Text.Json;
+using System.Text.Json.Schema;
 
 namespace XafAiExtensionsDataAnalysis.Module.DatabaseUpdate;
 
@@ -70,6 +77,33 @@ public class Updater : ModuleUpdater {
             singleton.Schema = "";
 
         }
+
+        // Get all report resources
+        var allReports = ReportResourceHelper.GetReportResources(Assembly.GetExecutingAssembly()).ToList();
+        // Get all prompt resources
+        var allPrompts = PromptResourceHelper.GetPromptResources(Assembly.GetExecutingAssembly()).ToList();
+
+        if (ObjectSpace.GetObjectsCount(typeof(ReportGeneratorAI), null) == 0)
+        {
+            ReportGeneratorAI reportGeneratorAI = ObjectSpace.CreateObject<ReportGeneratorAI>();
+            reportGeneratorAI.SystemPrompt = allPrompts.FirstOrDefault(p => p.FileName == "ReportGeneratorAISystemPrompt")?.TextContent;
+            JsonSerializerOptions options = JsonSerializerOptions.Default;
+            JsonNode ReportRequirementSchema = options.GetJsonSchemaAsNode(typeof(ReportRequest));
+            JsonNode OrmSchema = options.GetJsonSchemaAsNode(typeof(List<OrmEntityDto>));
+            reportGeneratorAI.SystemPrompt = reportGeneratorAI.SystemPrompt.Replace("{{$ReportJsonSchema}}", ReportRequirementSchema.ToString());
+            reportGeneratorAI.SystemPrompt = reportGeneratorAI.SystemPrompt.Replace("{{$OrmJsonSchema}}", OrmSchema.ToString());
+            foreach (var item in allReports)
+            {
+                var example = ObjectSpace.CreateObject<ReportGeneratorAIExample>();
+                example.Prompt = item.PromptContent;
+                example.Json = item.JsonContent;
+                example.ReportExample = Image.FromStream(new MemoryStream(item.ImageContent));
+                reportGeneratorAI.ReportGeneratorExamples.Add(example);
+
+            }
+
+        }
+
         ObjectSpace.CommitChanges(); //This line persists created object(s).
 
         ObjectSpace.GenerateDataIfEmpty();

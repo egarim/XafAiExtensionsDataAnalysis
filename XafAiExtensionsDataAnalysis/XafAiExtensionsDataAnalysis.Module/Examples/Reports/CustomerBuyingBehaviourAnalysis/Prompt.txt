@@ -1,0 +1,28 @@
+I need to create DevExpress XtraReports in runtime using the RuntimeReportBuilder CreateReport method and the data from the classes ReportColumn CalculatedFieldOptions GroupingOptions
+based on THIS descriptions 
+
+
+Purpose: Understand customer buying behavior and frequency
+Data to Include:
+- Customer Details (Name, Country)
+- Purchase Frequency
+- Average Days Between Purchases
+- Most Purchased Categories
+- Most Purchased Products
+- Average Order Value
+
+Calculations:
+- Purchase Frequency = Number of Invoices / Time Period (months)
+- Average Basket Size = Average number of different products per invoice
+- Customer Lifetime Value = Total Customer Sales
+- Average Days Between Orders = Days between first and last order / Number of orders
+
+Grouping:
+- Primary: Customer
+- Secondary: Time Period (Monthly/Quarterly)
+- Product Category Distribution
+
+
+based on the datata of the ORM, dont use any LINQ or pre treatment of the data, the report should be created only using the functionality from xtrareports and the RuntimeReportBuilder CreateReport method
+
+if you cant express report with the functionality from xtrareports and the RuntimeReportBuilder CreateReport method suggest how to extend the RuntimeReportBuilder
