@@ -49,7 +49,7 @@ namespace XafAiExtensionsDataAnalysis.Module.Tools
                 }
 
                 // Get Prompt content
-                var promptResource = resources.FirstOrDefault(r => r.Contains($".Reports.{folder}.") && r.EndsWith(".prompt"));
+                var promptResource = resources.FirstOrDefault(r => r.Contains($".Reports.{folder}.") && r.EndsWith("rompt.txt"));
                 if (promptResource != null)
                 {
                     using (var stream = assembly.GetManifestResourceStream(promptResource))

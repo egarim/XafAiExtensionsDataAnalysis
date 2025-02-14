@@ -16,7 +16,7 @@ namespace XafAiExtensionsDataAnalysis.Module.BusinessObjects {
     [DefaultClassOptions]
     [NavigationItem("A.I")]
     //[ImageName("BO_Contact")]
-    //[DefaultProperty("DisplayMemberNameForLookupEditorsOfThisType")]
+    [DefaultProperty(nameof(ReportGeneratorAI.Name))]
     //[DefaultListViewOptions(MasterDetailMode.ListViewOnly, false, NewItemRowPosition.None)]
     //[Persistent("DatabaseTableName")]
     // Specify more UI options using a declarative approach (https://docs.devexpress.com/eXpressAppFramework/112701/business-model-design-orm/data-annotations-in-data-model).
@@ -31,8 +31,17 @@ namespace XafAiExtensionsDataAnalysis.Module.BusinessObjects {
             // Place your initialization code here (https://docs.devexpress.com/eXpressAppFramework/112834/getting-started/in-depth-tutorial-winforms-webforms/business-model-design/initialize-a-property-after-creating-an-object-xpo?v=22.1).
         }
 
+        string name;
         string systemPrompt;
 
+
+        
+        [Size(SizeAttribute.DefaultStringMappingFieldSize)]
+        public string Name
+        {
+            get => name;
+            set => SetPropertyValue(nameof(Name), ref name, value);
+        }
         [Size(SizeAttribute.Unlimited)]
         public string SystemPrompt
         {

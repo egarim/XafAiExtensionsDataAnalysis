@@ -86,6 +86,7 @@ public class Updater : ModuleUpdater {
         if (ObjectSpace.GetObjectsCount(typeof(ReportGeneratorAI), null) == 0)
         {
             ReportGeneratorAI reportGeneratorAI = ObjectSpace.CreateObject<ReportGeneratorAI>();
+            reportGeneratorAI.Name = "Default Report Generator AI";
             reportGeneratorAI.SystemPrompt = allPrompts.FirstOrDefault(p => p.FileName == "ReportGeneratorAISystemPrompt")?.TextContent;
             JsonSerializerOptions options = JsonSerializerOptions.Default;
             JsonNode ReportRequirementSchema = options.GetJsonSchemaAsNode(typeof(ReportRequest));
@@ -95,9 +96,11 @@ public class Updater : ModuleUpdater {
             foreach (var item in allReports)
             {
                 var example = ObjectSpace.CreateObject<ReportGeneratorAIExample>();
+                example.Name = item.FolderName;
                 example.Prompt = item.PromptContent;
                 example.Json = item.JsonContent;
-                example.ReportExample = Image.FromStream(new MemoryStream(item.ImageContent));
+                Image image = Image.FromStream(new MemoryStream(item.ImageContent));
+                example.ReportExample = image;
                 reportGeneratorAI.ReportGeneratorExamples.Add(example);
 
             }

@@ -18,12 +18,12 @@ When analyzing schemas and requirements, you will:
 
 Schema Template:
 ```json
-$OrmJsonSchema
+{{$OrmJsonSchema}}
 ```
 
 Report Description Template:
 ```json
-$ReportJsonSchema
+{{$ReportJsonSchema}}
 ```
 
 Analysis Approach:
