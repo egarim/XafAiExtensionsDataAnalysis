@@ -33,6 +33,8 @@ namespace XafAiExtensionsDataAnalysis.Module.Controllers
 
             try
             {
+
+
                 var CurrentAiAnalysis = this.View.CurrentObject as AiAnalysis;
                 var businessSchema = this.ObjectSpace.FindObject<BusinessSchema>(null);
                 CurrentClient = GetChatClientOpenAiImp(Environment.GetEnvironmentVariable("OpenAiTestKey"), OpenAiModelId);
@@ -42,13 +44,14 @@ namespace XafAiExtensionsDataAnalysis.Module.Controllers
                 List<ChatMessage> chatMessages = new List<ChatMessage>();
 
 
-                //chatMessages.Add(new ChatMessage(ChatRole.System, reportGeneratorAI.SystemPrompt));
+                chatMessages.Add(new ChatMessage(ChatRole.System, CurrentAiAnalysis.SystemPrompt.Text));
                 //chatMessages.Add(new ChatMessage(ChatRole.System, $"The pivot MUST be generated using this Schema {businessSchema.Schema}, the datasource must be one of the entities on this schema, use the TypeFullName property to set the value of the datasource"));
-                //chatMessages.Add(new ChatMessage(ChatRole.User, CurrentAiGeneratedReport.Prompt));
+                chatMessages.Add(new ChatMessage(ChatRole.User, CurrentAiAnalysis.Prompt));
 
 
 
-                //var AiAnswer = await CurrentClient.CompleteAsync<ReportRequest>(chatMessages);
+                var AiAnswer = await CurrentClient.CompleteAsync<PivotConfiguration>(chatMessages);
+                this.ConfigureAnalysis(AiAnswer.Result, CurrentAiAnalysis);
             }
             catch (Exception)
             {

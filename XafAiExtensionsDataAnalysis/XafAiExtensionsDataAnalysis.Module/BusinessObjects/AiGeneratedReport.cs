@@ -31,6 +31,8 @@ namespace XafAiExtensionsDataAnalysis.Module.BusinessObjects {
             // Place your initialization code here (https://docs.devexpress.com/eXpressAppFramework/112834/getting-started/in-depth-tutorial-winforms-webforms/business-model-design/initialize-a-property-after-creating-an-object-xpo?v=22.1).
         }
 
+        string generatedOutput;
+        SystemPrompt systemPrompt;
         string reportDefJson;
         ReportDataV2 report;
         string reportTitle;
@@ -44,6 +46,11 @@ namespace XafAiExtensionsDataAnalysis.Module.BusinessObjects {
             set => SetPropertyValue(nameof(Prompt), ref prompt, value);
         }
 
+        public SystemPrompt SystemPrompt
+        {
+            get => systemPrompt;
+            set => SetPropertyValue(nameof(SystemPrompt), ref systemPrompt, value);
+        }
         [Size(SizeAttribute.Unlimited)]
         public string Log
         {
@@ -57,12 +64,13 @@ namespace XafAiExtensionsDataAnalysis.Module.BusinessObjects {
             get => reportTitle;
             set => SetPropertyValue(nameof(ReportTitle), ref reportTitle, value);
         }
-        
+
+
         [Size(SizeAttribute.Unlimited)]
-        public string ReportDefJson
+        public string GeneratedOutput
         {
-            get => reportDefJson;
-            set => SetPropertyValue(nameof(ReportDefJson), ref reportDefJson, value);
+            get => generatedOutput;
+            set => SetPropertyValue(nameof(GeneratedOutput), ref generatedOutput, value);
         }
         [Size(SizeAttribute.DefaultStringMappingFieldSize)]
         public ReportDataV2 Report

@@ -57,7 +57,7 @@ namespace XafAiExtensionsDataAnalysis.Module.Controllers {
             try
             {
                 var CurrentAiGeneratedReport = this.View.CurrentObject as AiGeneratedReport;
-                var reportGeneratorAI=this.ObjectSpace.FindObject<SystemPrompt>(null);
+                var reportGeneratorAI= CurrentAiGeneratedReport.SystemPrompt;
                 var businessSchema = this.ObjectSpace.FindObject<BusinessSchema>(null);
                 CurrentClient = GetChatClientOpenAiImp(Environment.GetEnvironmentVariable("OpenAiTestKey"), OpenAiModelId);
                 List<ChatMessage> Messages = new List<ChatMessage>();
@@ -85,7 +85,7 @@ namespace XafAiExtensionsDataAnalysis.Module.Controllers {
                 reportData.DisplayName = AiAnswer.Result.ReportTitle;
                 CurrentAiGeneratedReport.ReportTitle = AiAnswer.Result.ReportTitle;
                 CurrentAiGeneratedReport.Report = reportData;
-                CurrentAiGeneratedReport.ReportDefJson = JsonSerializer.Serialize(AiAnswer.Result);
+                CurrentAiGeneratedReport.GeneratedOutput = JsonSerializer.Serialize(AiAnswer.Result);
                 CurrentAiGeneratedReport.Log ="Report Successfully Generated"+System.Environment.NewLine+JsonSerializer.Serialize(AiAnswer.Usage);
                 this.ObjectSpace.CommitChanges();
             }

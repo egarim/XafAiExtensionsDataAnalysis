@@ -18,6 +18,8 @@ namespace XafAiExtensionsDataAnalysis.Module.BusinessObjects
         { }
 
 
+        string generatedOutput;
+        string log;
         SystemPrompt reportGeneratorAI;
         string prompt;
 
@@ -27,11 +29,24 @@ namespace XafAiExtensionsDataAnalysis.Module.BusinessObjects
             get => prompt;
             set => SetPropertyValue(nameof(Prompt), ref prompt, value);
         }
+
+        [Size(SizeAttribute.Unlimited)]
+        public string Log
+        {
+            get => log;
+            set => SetPropertyValue(nameof(Log), ref log, value);
+        }
         
-        public SystemPrompt ReportGeneratorAI
+        [Size(SizeAttribute.Unlimited)]
+        public string GeneratedOutput
+        {
+            get => generatedOutput;
+            set => SetPropertyValue(nameof(GeneratedOutput), ref generatedOutput, value);
+        }
+        public SystemPrompt SystemPrompt
         {
             get => reportGeneratorAI;
-            set => SetPropertyValue(nameof(ReportGeneratorAI), ref reportGeneratorAI, value);
+            set => SetPropertyValue(nameof(SystemPrompt), ref reportGeneratorAI, value);
         }
     }
 }

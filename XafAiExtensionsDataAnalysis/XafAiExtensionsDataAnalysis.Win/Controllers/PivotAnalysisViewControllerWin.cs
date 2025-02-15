@@ -72,6 +72,53 @@ namespace XafAiExtensionsDataAnalysis.Win.Controllers
             //IAnalysisControl control= new AnalysisControlWin();
             control.DataSource = new AnalysisDataSource(aiAnalysis, this.View.ObjectSpace.GetObjects(typeof(InvoiceHeader)));
             control.FieldBuilder.RebuildFields();
+            control.
+            try
+            {
+
+                // Configure Data Fields
+                foreach (var fieldConfig in config.DataFields)
+                {
+                    var field = CreatePivotField(fieldConfig, control.Fields);
+                    field.Area = PivotArea.DataArea;
+                    field.AreaIndex = fieldConfig.AreaIndex;
+
+                }
+
+                // Configure Row Fields
+                foreach (var fieldConfig in config.RowFields)
+                {
+                    var field = CreatePivotField(fieldConfig, control.Fields);
+                    field.Area = PivotArea.RowArea;
+                    field.AreaIndex = fieldConfig.AreaIndex;
+
+                }
+
+                // Configure Column Fields
+                foreach (var fieldConfig in config.ColumnFields)
+                {
+                    var field = CreatePivotField(fieldConfig, control.Fields);
+                    field.Area = PivotArea.ColumnArea;
+                    field.AreaIndex = fieldConfig.AreaIndex;
+
+                }
+
+                // Configure Filter Fields
+                foreach (var fieldConfig in config.FilterFields)
+                {
+                    var field = CreatePivotField(fieldConfig, control.Fields);
+                    field.Area = PivotArea.FilterArea;
+                    field.AreaIndex = fieldConfig.AreaIndex;
+
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                throw new UserFriendlyException($"Error configuring pivot grid: {ex.Message}");
+            }
+
         }
         private void ConfigurePivotGrid(PivotConfiguration config, IObjectSpace objectSpace, AnalysisControlWin control)
         {
