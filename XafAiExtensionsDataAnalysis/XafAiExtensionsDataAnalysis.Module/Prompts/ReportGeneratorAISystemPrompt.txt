@@ -67,4 +67,135 @@ Additional Considerations:
 - Historical data requirements
 - Aggregation needs
 
-Please provide your schema and business requirement information using the templates above, and I will help you identify the optimal entry points and paths for your report.
+here is the documentation about the expressions you can use in calculated fields
+
+# Aggregate Functions
+
+| Function | Description | Example | XLS(x) Format Export-Friendly[1] |
+|----------|-------------|---------|----------------------------------|
+| Avg(Value) | Evaluates the average of the values in the collection. | [Products].Avg([UnitPrice]) | - |
+| Count() | Returns the number of objects in a collection. | [Products].Count() | - |
+| Exists() | Determines whether the object exists in the collection. | [Categories][[CategoryID] == 7].Exists() | - |
+| Max(Value) | Returns the maximum expression value in a collection. | [Products].Max([UnitPrice]) | - |
+| Min(Value) | Returns the minimum expression value in a collection. | [Products].Min([UnitPrice]) | - |
+| Single() | Returns a single object from a collection that contains no more than one object. If the collection contains more objects, use the Condition property to specify a condition. The collection must contain only one object that satisfies the condition. Otherwise, the function's behavior is undefined (the function may return an unexpected value or throw an exception). You can pass an expression as a parameter: [Collection][Condition].Single(Expression). The function returns the Expression value evaluated on an object that meets the specified Condition (optional). | [Accounts].Single() is not null [Collection].Single([Property1]) - returns the found object's property value. | - |
+| Sum(Value) | Returns the sum of all the expression values in the collection. | [Products].Sum([UnitsInStock]) | - |
+| InRange(Value, FromValue, ToValue) | Returns True if Value is more than or equal to FromValue, and less than ToValue. The InRange(value, from, to) filter is equivalent to the from <= value && value < to expression. | InRange([ProductPrice], 10.00, 50.00) | - |
+| A custom aggregate function | Returns a custom expression value for a collection, according to a custom aggregate function. You can call the function directly or pass it as a parameter. | Call a Custom Aggregate Function | - |
+
+
+# Date-time Functions
+
+| Function | Description | Example | XLS(x) Format Export-Friendly[1] |
+|----------|-------------|---------|----------------------------------|
+| AddDays(DateTime, DaysCount) | Returns a date-time value that is the specified number of days from the specified DateTime. | AddDays([OrderDate], 30) | Yes |
+| AddHours(DateTime, HoursCount) | Returns a date-time value that is the specified number of hours from the specified DateTime. | AddHours([StartTime], 2) | Yes |
+| AddMilliSeconds(DateTime, MilliSecondsCount) | Returns a date-time value that is the specified number of milliseconds from the specified DateTime. | AddMilliSeconds(([StartTime], 5000)) | - |
+| AddMinutes(DateTime, MinutesCount) | Returns a date-time value that is the specified number of minutes from the specified DateTime. | AddMinutes([StartTime], 30) | Yes |
+| AddMonths(DateTime, MonthsCount) | Returns a date-time value that is the specified number of months from the specified DateTime. | AddMonths([OrderDate], 1) | Yes |
+| AddSeconds(DateTime, SecondsCount) | Returns a date-time value that is the specified number of seconds from the specified DateTime. | AddSeconds([StartTime], 60) | Yes |
+| AddTicks(DateTime, TicksCount) | Returns a date-time value that is the specified number of ticks from the specified DateTime. | AddTicks([StartTime], 5000) | - |
+| AddTimeSpan(DateTime, TimeSpan) | Returns a date-time value that is from the specified DateTime for the given TimeSpan. | AddTimeSpan([StartTime], [Duration]) | - |
+| AddYears(DateTime, YearsCount) | Returns a date-time value that is the specified number of years from the specified DateTime. | AddYears([EndDate], -1) | Yes |
+| DateDiffDay(startDate, endDate) | The differences in days between the two specified dates (time portion is not taken into account). | DateDiffDay([StartTime], Now()) | Yes |
+| DateDiffHour(startDate, endDate) | The difference in hours between the two specified dates (minutes are not taken into account). | DateDiffHour([StartTime], Now()) | Yes |
+| DateDiffMilliSecond(startDate, endDate) | Returns the number of millisecond boundaries between two non-nullable dates. | DateDiffMilliSecond([StartTime], Now()) | - |
+| DateDiffMinute(startDate, endDate) | Returns the number of minute boundaries between two non-nullable dates. | DateDiffMinute([StartTime], Now()) | Yes |
+| DateDiffMonth(startDate, endDate) | Returns the number of month boundaries between two non-nullable dates. | DateDiffMonth([StartTime], Now()) | Yes |
+| DateDiffSecond(startDate, endDate) | Returns the number of second boundaries between two non-nullable dates. | DateDiffSecond([StartTime], Now()) | Yes |
+| DateDiffTick(startDate, endDate) | Returns the number of tick boundaries between two non-nullable dates. | DateDiffTick([StartTime], Now()) | - |
+| DateDiffYear(startDate, endDate) | Returns the number of year boundaries between two non-nullable dates. | DateDiffYear([StartTime], Now()) | Yes |
+| GetDate(DateTime) | Extracts a date from the defined DateTime. The return value represents a DateTime object with the same date part, and the time part set to 00:00:00. | GetDate([OrderDateTime]) | Yes |
+| GetDay(DateTime) | Extracts a day from the defined DateTime. | GetDay([OrderDate]) | Yes |
+| GetDayOfWeek(DateTime) | Extracts a day of the week from the defined DateTime. | GetDayOfWeek([OrderDate]) | Yes |
+| GetDayOfYear(DateTime) | Extracts a day of the year from the defined DateTime. | GetDayOfYear([OrderDate]) | Yes |
+| GetHour(DateTime) | Extracts an hour from the defined DateTime. | GetHour([StartTime]) | Yes |
+| GetMilliSecond(DateTime) | Extracts milliseconds from the defined DateTime. | GetMilliSecond([StartTime]) | - |
+| GetMinute(DateTime) | Extracts minutes from the defined DateTime. | GetMinute([StartTime]) | Yes |
+| GetMonth(DateTime) | Extracts a month from the defined DateTime. | GetMonth([StartTime]) | Yes |
+| GetSecond(DateTime) | Extracts seconds from the defined DateTime. | GetSecond([StartTime]) | Yes |
+| GetTimeOfDay(DateTime) | Extracts the time of the day from the defined DateTime in ticks. | GetTimeOfDay([StartTime]) | - |
+| GetYear(DateTime) | Extracts a year from the defined DateTime. | GetYear([StartTime]) | Yes |
+| IsApril(DateTime) | Returns True if the specified date falls within April. | IsApril([OrderDate]) | Yes |
+| IsAugust(DateTime) | Returns True if the specified date falls within August. | IsAugust([OrderDate]) | Yes |
+| IsDecember(DateTime) | Returns True if the specified date falls within December. | IsDecember([OrderDate]) | Yes |
+| IsFebruary(DateTime) | Returns True if the specified date falls within February. | IsFebruary([OrderDate]) | Yes |
+| IsJanuary(DateTime) | Returns True if the specified date falls within January. | IsJanuary([OrderDate]) | Yes |
+| IsJuly(DateTime) | Returns True if the specified date falls within July. | IsJuly([OrderDate]) | Yes |
+| IsJune(DateTime) | Returns True if the specified date falls within June. | IsJune([OrderDate]) | Yes |
+| IsLastMonth(DateTime) | Returns True if the specified date falls within the previous month. | IsLastMonth([OrderDate]) | Yes |
+| IsLastYear(DateTime) | Returns True if the specified date falls within the previous year. | IsLastYear([OrderDate]) | Yes |
+| IsMarch(DateTime) | Returns True if the specified date falls within March. | IsMarch([OrderDate]) | Yes |
+| IsMay(DateTime) | Returns True if the specified date falls within May. | IsMay([OrderDate]) | Yes |
+| IsNextMonth(DateTime) | Returns True if the specified date falls within the next month. | IsNextMonth([OrderDate]) | Yes |
+| IsNextYear(DateTime) | Returns True if the specified date falls within the next year. | IsNextYear([OrderDate]) | Yes |
+| IsNovember(DateTime) | Returns True if the specified date falls within November. | IsNovember([OrderDate]) | Yes |
+| IsOctober(DateTime) | Returns True if the specified date falls within October. | IsOctober([OrderDate]) | Yes |
+| IsSameDay(firstDate, secondDate, …) | Returns True if the specified date/time values fall within the same day. | IsSameDay([OrderDate], [ShipDate]) | Yes |
+| IsSeptember(DateTime) | Returns True if the specified date falls within September. | IsSeptember([OrderDate]) | Yes |
+| IsThisMonth(DateTime) | Returns True if the specified date falls within the current month. | IsThisMonth([OrderDate]) | Yes |
+| IsThisWeek(DateTime) | Returns True if the specified date falls within the current week. | IsThisWeek([OrderDate]) | Yes |
+| IsYearToDate(DateTime) | Returns True if the specified date falls within the year-to-date period. This period starts from the first day of the current year and continues to the current date (including the current date). | IsYearToDate([OrderDate]) | Yes |
+| IsThisYear(DateTime) | Returns True if the specified date falls within the current year. | IsThisYear([OrderDate]) | Yes |
+| InDateRange(Date, FromDate, ToDate) | Returns True if Date is more than or equal to FromDate, and less than the day that follows ToDate. The InDateRange(dateValue, from, to) filter is equivalent to the GetDate(from) <= dateValue && dateValue < AddDays(GetDate(to), 1) expression | InDateRange([OrderDate], #2022-01-01#, #2022-12-31#) | Yes |
+| LocalDateTimeDayAfterTomorrow() | Returns a date-time value corresponding to the day after Tomorrow. | AddDays(LocalDateTimeDayAfterTomorrow(), 5) | Yes |
+| LocalDateTimeLastMonth() | Returns the DateTime value corresponding to the first day of the previous month. | AddMonths(LocalDateTimeLastMonth(), 5) | Yes |
+| LocalDateTimeLastWeek() | Returns a date-time value corresponding to the first day of the previous week. | AddDays(LocalDateTimeLastWeek(), 5) | Yes |
+| LocalDateTimeLastYear() | Returns the DateTime value corresponding to the first day of the previous year. | AddYears(LocalDateTimeLastYear(), 5) | Yes |
+| LocalDateTimeNextMonth() | Returns a date-time value corresponding to the first day of the next month. | AddMonths(LocalDateTimeNextMonth(), 5) | Yes |
+| LocalDateTimeNextWeek() | Returns a date-time value corresponding to the first day of the following week. | AddDays(LocalDateTimeNextWeek(), 5) | Yes |
+| LocalDateTimeNextYear() | Returns a date-time value corresponding to the first day of the following year. | AddYears(LocalDateTimeNextYear(), 5) | Yes |
+| LocalDateTimeNow() | Returns a date-time value corresponding to the current moment in time. | AddDays(LocalDateTimeNow(), 5) | Yes |
+| LocalDateTimeThisMonth() | Returns a date-time value corresponding to the first day of the current month. | AddMonths(LocalDateTimeThisMonth(), 5) | Yes |
+| LocalDateTimeThisWeek() | Returns a date-time value corresponding to the first day of the current week. | AddDays(LocalDateTimeThisWeek(), 5) | Yes |
+| LocalDateTimeThisYear() | Returns a date-time value corresponding to the first day of the current year. | AddYears(LocalDateTimeThisYear(), 5) | Yes |
+| LocalDateTimeToday() | Returns a date-time value corresponding to Today. | AddDays(LocalDateTimeToday(), 5) | Yes |
+| LocalDateTimeTomorrow() | Returns a date-time value corresponding to Tomorrow. | AddDays(LocalDateTimeTomorrow(), 5) | Yes |
+| LocalDateTimeTwoMonthsAway() | Returns the DateTime value corresponding to the first day of the following month. | AddMonths(LocalDateTimeTwoMonthAway(), 5) | Yes |
+| LocalDateTimeTwoWeeksAway() | Returns the DateTime value corresponding to the first day of the following week. | AddDays(LocalDateTimeTwoWeeksAway(), 5) | Yes |
+| LocalDateTimeTwoYearsAway() | Returns the DateTime value corresponding to the first day of the following year. | AddYears(LocalDateTimeTwoYearsAway(), 5) | Yes |
+| LocalDateTimeYearBeforeToday() | Returns the DateTime value corresponding to the day one year ago. | AddYears(LocalDateTimeYearBeforeToday(), 5) | Yes |
+| LocalDateTimeYesterday() | Returns a date-time value corresponding to Yesterday. | AddDays(LocalDateTimeYesterday(), 5) | Yes |
+| Now() | Returns the current system date and time. | AddDays(Now(), 5) | Yes |
+| Today() | Returns the current date. Regardless of the actual time, this function returns midnight of the current date. | AddMonths(Today(), 1) | Yes |
+| UtcNow() | Returns the current system date and time, expressed as Coordinated Universal Time (UTC). | AddDays(UtcNow(), 7) | - |
+| DateTimeFromParts(year, month, day, hour, minute, second, millisecond) | Returns a DateTime value constructed from the specified Year, Month, Day (Hour, Minute, Second, Millisecond optionally). | DateTimeFromParts(2020, 06, 25, 13, 40) | - |
+| IsThisHour | Returns True if the specified time falls within the hour. | IsThisHour([OrderDate]) | - |
+| IsLastHour | Returns True if the specified time falls within the last hour. | IsLastHour([OrderDate]) | - |
+| IsNextHour | Returns True if the specified time falls within the next hour. | IsNextHour([OrderDate]) | - |
+
+Math functions
+
+| Function | Description | Example | XLS |
+|----------|-------------|---------|-----|
+| Abs(Value) | Returns the given numeric expression's absolute, positive value. | `Abs(1 - [Discount])` | Yes |
+| Acos(Value) | Returns a number's arccosine (the angle in radians, whose cosine is the given float expression). | `Acos([Value])` | Yes |
+| Asin(Value) | Returns a number's arcsine (the angle in radians, whose sine is the given float expression). | `Asin([Value])` | Yes |
+| Atn(Value) | Returns a number's arctangent (the angle in radians, whose tangent is the given float expression). | `Atn([Value])` | Yes |
+| Atn2(Value1, Value2) | Returns the angle whose tangent is the quotient of two specified numbers in radians. | `Atn2([Value1], [Value2])` | Yes |
+| BigMul(Value1, Value2) | Returns an Int64 containing the full product of two specified 32-bit numbers. | `BigMul([Amount], [Quantity])` | - |
+| Ceiling(Value) | Returns the smallest integer that is greater than or equal to the numeric expression. | `Ceiling([Value])` | Yes |
+| Cos(Value) | Returns the angle's cosine, in radians. | `Cos([Value])` | Yes |
+| Cosh(Value) | Returns the angle's hyperbolic cosine, in radians. | `Cosh([Value])` | Yes |
+| Exp(Value) | Returns the float expression's exponential value. | `Exp([Value])` | Yes |
+| Floor(Value) | Returns the largest integer less than or equal to the numeric expression. | `Floor([Value])` | Yes |
+| Log(Value) | Returns a specified number's natural logarithm. | `Log([Value])` | Yes |
+| Log(Value, Base) | Returns the logarithm of a specified number in a specified Base. | `Log([Value], 2)` | Yes |
+| Log10(Value) | Returns a specified number's base 10 logarithm. | `Log10([Value])` | Yes |
+| Max(Value1, Value2) | Returns the maximum value from the specified values. | `Max([Value1], [Value2])` | Yes |
+| Min(Value1, Value2) | Returns the minimum value from the specified values. | `Min([Value1], [Value2])` | Yes |
+| Power(Value, Power) | Returns a specified number raised to a specified power. | `Power([Value], 3)` | Yes |
+| Rnd() | Returns a random number that is less than 1, but greater than or equal to zero. | `Rnd()*100` | Yes |
+| Round(Value) | Rounds the given value to the nearest integer. | `Round([Value])` | Yes |
+| Round(Value, Precision) | Rounds the given value to the nearest integer, or to a specified number of decimal places. | `Round([Value], 2)` | Yes |
+| Sign(Value) | Returns the positive (+1), zero (0), or negative (-1) sign of the given expression. | `Sign([Value])` | Yes |
+| Sin(Value) | Returns the sine of the angle defined in radians. | `Sin([Value])` | Yes |
+| Sinh(Value) | Returns the hyperbolic sine of the angle defined in radians. | `Sinh([Value])` | Yes |
+| Sqr(Value) | Returns the square root of a given number. | `Sqr([Value])` | - |
+| Tan(Value) | Returns the tangent of the angle defined in radians. | `Tan([Value])` | Yes |
+| Tanh(Value) | Returns the hyperbolic tangent of the angle defined in radians. | `Tanh([Value])` | Yes |
+| ToDecimal(Value) | Converts Value to an equivalent decimal number. | `ToDecimal([Value])` | - |
+| ToDouble(Value) | Converts Value to an equivalent 64-bit double-precision floating-point number. | `ToDouble([Value])` | - |
+| ToFloat(Value) | Converts Value to an equivalent 32-bit single-precision floating-point number. | `ToFloat([Value])` | - |
+| ToInt(Value) | Converts Value to an equivalent 32-bit signed integer. | `ToInt([Value])` | - |
+| ToLong(Value) | Converts Value to an equivalent 64-bit signed integer. | `ToLong([Value])` | - |

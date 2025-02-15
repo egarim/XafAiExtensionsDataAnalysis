@@ -26,8 +26,8 @@ namespace XafAiExtensionsDataAnalysis.Module.Controllers {
             GenerateReport = new SimpleAction(this, "Generate Report", "View");
             GenerateReport.Execute += GenerateReport_Execute;
 
-            PreviewReport = new SimpleAction(this, "MyAction", "View");
-            PreviewReport.Execute += PreviewReport_Execute;
+            //PreviewReport = new SimpleAction(this, "MyAction", "View");
+            //PreviewReport.Execute += PreviewReport_Execute;
             
 
         }
@@ -85,7 +85,7 @@ namespace XafAiExtensionsDataAnalysis.Module.Controllers {
                 reportData.DisplayName = AiAnswer.Result.ReportTitle;
                 CurrentAiGeneratedReport.ReportTitle = AiAnswer.Result.ReportTitle;
                 CurrentAiGeneratedReport.Report = reportData;
-            
+                CurrentAiGeneratedReport.ReportDefJson = JsonSerializer.Serialize(AiAnswer.Result);
                 CurrentAiGeneratedReport.Log ="Report Successfully Generated"+System.Environment.NewLine+JsonSerializer.Serialize(AiAnswer.Usage);
                 this.ObjectSpace.CommitChanges();
             }
