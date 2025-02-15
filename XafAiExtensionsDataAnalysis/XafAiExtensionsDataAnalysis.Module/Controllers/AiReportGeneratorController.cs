@@ -9,7 +9,7 @@ using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
 using OpenAI;
 using System.Text.Json;
-using XafAiExtensionsDataAnalysis.Module.AiTools;
+using XafAiExtensionsDataAnalysis.Module.Ai.Reports;
 using XafAiExtensionsDataAnalysis.Module.BusinessObjects;
 
 

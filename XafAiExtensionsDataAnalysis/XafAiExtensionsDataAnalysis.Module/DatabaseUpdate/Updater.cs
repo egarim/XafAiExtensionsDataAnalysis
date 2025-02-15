@@ -15,10 +15,10 @@ using XafAiExtensionsDataAnalysis.Module.Tools;
 using System.Reflection;
 using System.Drawing;
 using Microsoft.Extensions.Options;
-using XafAiExtensionsDataAnalysis.Module.AiTools;
 using System.Text.Json.Nodes;
 using System.Text.Json;
 using System.Text.Json.Schema;
+using XafAiExtensionsDataAnalysis.Module.Ai.Reports;
 
 namespace XafAiExtensionsDataAnalysis.Module.DatabaseUpdate;
 

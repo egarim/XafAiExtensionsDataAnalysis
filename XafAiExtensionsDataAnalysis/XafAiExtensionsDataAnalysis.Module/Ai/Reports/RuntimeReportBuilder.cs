@@ -6,7 +6,7 @@ using DevExpress.DataAccess.ObjectBinding;
 using DevExpress.Persistent.Base.ReportsV2;
 using DevExpress.ExpressApp;
 
-namespace XafAiExtensionsDataAnalysis.Module.AiTools
+namespace XafAiExtensionsDataAnalysis.Module.Ai.Reports
 {
   
     public class RuntimeReportBuilder
@@ -67,7 +67,7 @@ namespace XafAiExtensionsDataAnalysis.Module.AiTools
 
 
 
-            var DataSource=this.GetDataSourceFromType(request.DataSource);
+            var DataSource= GetDataSourceFromType(request.DataSource);
 
 
             return CreateReport(

@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Text.Json.Serialization;
 using System.Drawing;
 
-namespace XafAiExtensionsDataAnalysis.Module.AiTools
+namespace XafAiExtensionsDataAnalysis.Module.Ai.Reports
 {
 
 
