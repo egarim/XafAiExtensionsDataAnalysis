@@ -67,7 +67,7 @@ namespace XafAiExtensionsDataAnalysis.Win.Controllers
         }
         protected override void ConfigureAnalysis(PivotConfiguration config, AiAnalysis aiAnalysis)
         {
-          
+            //https://docs.devexpress.com/eXpressAppFramework/113050/analytics/pivot-chart/distribute-an-analysis-with-the-application
             AnalysisControlWin control = this.View.GetItems<IAnalysisEditorWin>()[0].Control;
             //IAnalysisControl control= new AnalysisControlWin();
             control.DataSource = new AnalysisDataSource(aiAnalysis, this.View.ObjectSpace.GetObjects(typeof(InvoiceHeader)));
