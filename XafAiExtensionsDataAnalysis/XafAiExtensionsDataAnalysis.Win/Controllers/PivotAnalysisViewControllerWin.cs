@@ -65,19 +65,18 @@ namespace XafAiExtensionsDataAnalysis.Win.Controllers
             ConfigurePivotGrid(config, this.ObjectSpace, control);
             this.View.ObjectSpace.CommitChanges();
         }
-
+        protected override void ConfigureAnalysis(PivotConfiguration config, AiAnalysis aiAnalysis)
+        {
+          
+            AnalysisControlWin control = this.View.GetItems<IAnalysisEditorWin>()[0].Control;
+            //IAnalysisControl control= new AnalysisControlWin();
+            control.DataSource = new AnalysisDataSource(aiAnalysis, this.View.ObjectSpace.GetObjects(typeof(InvoiceHeader)));
+            control.FieldBuilder.RebuildFields();
+        }
         private void ConfigurePivotGrid(PivotConfiguration config, IObjectSpace objectSpace, AnalysisControlWin control)
         {
             try
             {
-
-
-                // Set data source
-                //var collection = objectSpace.GetObjectsQuery();
-                //pivotGrid.DataSource = collection;
-
-                // Clear existing fields
-
 
                 // Configure Data Fields
                 foreach (var fieldConfig in config.DataFields)

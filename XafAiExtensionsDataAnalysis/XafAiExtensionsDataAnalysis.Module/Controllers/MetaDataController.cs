@@ -38,37 +38,14 @@ namespace XafAiExtensionsDataAnalysis.Module.Controllers {
             var assembly = typeof(Customer).Assembly;
             var ormStructure = OrmAnalyzer.AnalyzeOrm(assembly, typeof(BaseObject));
 
-            // Example usage to print the structure
-            foreach (var entity in ormStructure)
-            {
-                Debug.WriteLine($"Entity: {entity.EntityName}");
-                Debug.WriteLine($"Description: {entity.Description}");
-
-                Debug.WriteLine("\nProperties:");
-                foreach (var prop in entity.Properties)
-                {
-                    Debug.WriteLine($"- {prop.Name} ({prop.Type}): {prop.Description}");
-                }
-
-                Debug.WriteLine("\nRelationships:");
-                foreach (var rel in entity.Relationships)
-                {
-                    Debug.WriteLine($"- {rel.SourceEntity} -> {rel.TargetEntity} ({rel.RelationType})");
-                }
-                Debug.WriteLine("\n");
+           
+            //serialize ormStructure to json formatted string
+            var json = System.Text.Json.JsonSerializer.Serialize(ormStructure, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
 
 
-                //serialize ormStructure to json formatted string
-                var json = System.Text.Json.JsonSerializer.Serialize(ormStructure, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
-
-                
-                var CurrentSchema = this.ObjectSpace.GetObjectsQuery<BusinessSchema>().FirstOrDefault();
-                CurrentSchema.Schema = json;
-                this.View.ObjectSpace.CommitChanges();
-
-
-
-            }
+            var CurrentSchema = this.ObjectSpace.GetObjectsQuery<BusinessSchema>().FirstOrDefault();
+            CurrentSchema.Schema = json;
+            this.View.ObjectSpace.CommitChanges();
         }
         protected override void OnActivated() {
             base.OnActivated(); 

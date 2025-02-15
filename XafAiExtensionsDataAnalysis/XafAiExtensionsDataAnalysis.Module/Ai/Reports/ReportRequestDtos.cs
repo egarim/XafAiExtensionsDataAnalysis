@@ -8,7 +8,7 @@ namespace XafAiExtensionsDataAnalysis.Module.Ai.Reports
 {
 
 
-    public class ReportRequest
+    public class ReportConfiguration
     {
         [JsonPropertyName("reportTitle")]
         [Description("The title of the report.")]

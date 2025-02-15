@@ -57,7 +57,7 @@ namespace XafAiExtensionsDataAnalysis.Module.Controllers {
             try
             {
                 var CurrentAiGeneratedReport = this.View.CurrentObject as AiGeneratedReport;
-                var reportGeneratorAI=this.ObjectSpace.FindObject<ReportGeneratorAI>(null);
+                var reportGeneratorAI=this.ObjectSpace.FindObject<SystemPrompt>(null);
                 var businessSchema = this.ObjectSpace.FindObject<BusinessSchema>(null);
                 CurrentClient = GetChatClientOpenAiImp(Environment.GetEnvironmentVariable("OpenAiTestKey"), OpenAiModelId);
                 List<ChatMessage> Messages = new List<ChatMessage>();
@@ -66,13 +66,13 @@ namespace XafAiExtensionsDataAnalysis.Module.Controllers {
                 List<ChatMessage> chatMessages = new List<ChatMessage>();
             
 
-                chatMessages.Add(new ChatMessage(ChatRole.System, reportGeneratorAI.SystemPrompt));
+                chatMessages.Add(new ChatMessage(ChatRole.System, reportGeneratorAI.Text));
                 chatMessages.Add(new ChatMessage(ChatRole.User, $"The report MUST be generated using this Schema {businessSchema.Schema}, the datasource must be one of the entities on this schema, use the TypeFullName property to set the value of the datasource"));
                 chatMessages.Add(new ChatMessage(ChatRole.User, CurrentAiGeneratedReport.Prompt));
 
 
 
-                var AiAnswer = await CurrentClient.CompleteAsync<ReportRequest>(chatMessages);
+                var AiAnswer = await CurrentClient.CompleteAsync<ReportConfiguration>(chatMessages);
                 RuntimeReportBuilder runtimeReportBuilder = new RuntimeReportBuilder();
                 var Report=runtimeReportBuilder.CreateReport(AiAnswer.Result);
                 MemoryStream stream = new();

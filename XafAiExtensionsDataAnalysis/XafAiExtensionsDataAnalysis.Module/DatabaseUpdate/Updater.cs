@@ -1,24 +1,25 @@
-﻿using DevExpress.ExpressApp;
-using DevExpress.Data.Filtering;
-using DevExpress.Persistent.Base;
-using DevExpress.ExpressApp.Updating;
+﻿using DevExpress.Data.Filtering;
+using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Security;
-using DevExpress.ExpressApp.SystemModule;
 using DevExpress.ExpressApp.Security.Strategy;
-using DevExpress.Xpo;
+using DevExpress.ExpressApp.SystemModule;
+using DevExpress.ExpressApp.Updating;
 using DevExpress.ExpressApp.Xpo;
+using DevExpress.Persistent.Base;
 using DevExpress.Persistent.BaseImpl;
 using DevExpress.Persistent.BaseImpl.PermissionPolicy;
-using XafAiExtensionsDataAnalysis.Module.BusinessObjects;
+using DevExpress.Xpo;
 using Microsoft.Extensions.DependencyInjection;
-using XafAiExtensionsDataAnalysis.Module.Tools;
-using System.Reflection;
-using System.Drawing;
 using Microsoft.Extensions.Options;
-using System.Text.Json.Nodes;
+using System.Drawing;
+using System.Reflection;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.Json.Schema;
+using XafAiExtensionsDataAnalysis.Module.Ai.PivotChart;
 using XafAiExtensionsDataAnalysis.Module.Ai.Reports;
+using XafAiExtensionsDataAnalysis.Module.BusinessObjects;
+using XafAiExtensionsDataAnalysis.Module.Tools;
 
 namespace XafAiExtensionsDataAnalysis.Module.DatabaseUpdate;
 
@@ -74,7 +75,14 @@ public class Updater : ModuleUpdater {
         if (ObjectSpace.GetObjectsCount(typeof(BusinessSchema), null) == 0)
         {
             BusinessSchema singleton = ObjectSpace.CreateObject<BusinessSchema>();
-            singleton.Schema = "";
+            var assembly = typeof(Customer).Assembly;
+            var ormStructure = OrmAnalyzer.AnalyzeOrm(assembly, typeof(BaseObject));
+
+
+            //serialize ormStructure to json formatted string
+            var json = JsonSerializer.Serialize(ormStructure, new JsonSerializerOptions { WriteIndented = true });
+
+            singleton.Schema = json;
 
         }
 
@@ -83,34 +91,61 @@ public class Updater : ModuleUpdater {
         // Get all prompt resources
         var allPrompts = PromptResourceHelper.GetPromptResources(Assembly.GetExecutingAssembly()).ToList();
 
-        if (ObjectSpace.GetObjectsCount(typeof(ReportGeneratorAI), null) == 0)
+        if (ObjectSpace.GetObjectsCount(typeof(SystemPrompt), null) == 0)
         {
-            ReportGeneratorAI reportGeneratorAI = ObjectSpace.CreateObject<ReportGeneratorAI>();
-            reportGeneratorAI.Name = "Default Report Generator AI";
-            reportGeneratorAI.SystemPrompt = allPrompts.FirstOrDefault(p => p.FileName == "ReportGeneratorAISystemPrompt")?.TextContent;
             JsonSerializerOptions options = JsonSerializerOptions.Default;
-            JsonNode ReportRequirementSchema = options.GetJsonSchemaAsNode(typeof(ReportRequest));
             JsonNode OrmSchema = options.GetJsonSchemaAsNode(typeof(List<OrmEntityDto>));
-            reportGeneratorAI.SystemPrompt = reportGeneratorAI.SystemPrompt.Replace("{{$ReportJsonSchema}}", ReportRequirementSchema.ToString());
-            reportGeneratorAI.SystemPrompt = reportGeneratorAI.SystemPrompt.Replace("{{$OrmJsonSchema}}", OrmSchema.ToString());
+
+
+            string AnalysisGeneratorAi = allPrompts.FirstOrDefault(p => p.FileName == "AnalysisGeneratorAISystemPrompt")?.TextContent;
+
+            SystemPrompt AnalysisGeneratorAI = GetReportGeneratorAI(AnalysisGeneratorAi, "Default Analysis Generator AI",AiModule.Analysis);
+
+            string ReportGeneratorAISystemPrompt = allPrompts.FirstOrDefault(p => p.FileName == "ReportGeneratorAISystemPrompt")?.TextContent;
+
+            SystemPrompt reportGeneratorAI = GetReportGeneratorAI(ReportGeneratorAISystemPrompt, "Default Report Generator AI",AiModule.Reports);
+
+
+            JsonNode PivotConfigurationSchema = options.GetJsonSchemaAsNode(typeof(PivotConfiguration));
+            AnalysisGeneratorAI.Text = AnalysisGeneratorAI.Text.Replace("{{OutputSchema}}", PivotConfigurationSchema.ToString());
+            AnalysisGeneratorAI.Text = AnalysisGeneratorAI.Text.Replace("{{OrmJsonSchema}}", OrmSchema.ToString());
+            AnalysisGeneratorAI.Text = AnalysisGeneratorAI.Text.Replace("{{ExampleOutput}}", PivotConfigurationHelper.SerializeConfiguration(PivotConfigurationHelper.CreateSampleSalesAnalysisConfig()));
+
+
+            JsonNode ReportRequirementSchema = options.GetJsonSchemaAsNode(typeof(ReportConfiguration));
+            reportGeneratorAI.Text = reportGeneratorAI.Text.Replace("{{OutputSchema}}", ReportRequirementSchema.ToString());
+            reportGeneratorAI.Text = reportGeneratorAI.Text.Replace("{{OrmJsonSchema}}", OrmSchema.ToString());
+            reportGeneratorAI.Text = reportGeneratorAI.Text.Replace("{{ExampleOutput}}", RuntimeReportBuilder.CreateCustomerBehaviorReport());
+
             foreach (var item in allReports)
             {
-                var example = ObjectSpace.CreateObject<ReportGeneratorAIExample>();
+                var example = ObjectSpace.CreateObject<PromptExample>();
                 example.Name = item.FolderName;
                 example.Prompt = item.PromptContent;
                 example.Json = item.JsonContent;
                 Image image = Image.FromStream(new MemoryStream(item.ImageContent));
                 example.ReportExample = image;
-                reportGeneratorAI.ReportGeneratorExamples.Add(example);
+                reportGeneratorAI.PromptExamples.Add(example);
 
             }
 
         }
+     
 
         ObjectSpace.CommitChanges(); //This line persists created object(s).
 
         ObjectSpace.GenerateDataIfEmpty();
     }
+
+    private SystemPrompt GetReportGeneratorAI(string textContent, string Name,AiModule aiModule)
+    {
+        SystemPrompt systemPrompt = ObjectSpace.CreateObject<SystemPrompt>();
+        systemPrompt.Name = Name;
+        systemPrompt.Text = textContent;
+        systemPrompt.Module = aiModule;
+        return systemPrompt;
+    }
+
     public override void UpdateDatabaseBeforeUpdateSchema() {
         base.UpdateDatabaseBeforeUpdateSchema();
         //if(CurrentDBVersion < new Version("1.1.0.0") && CurrentDBVersion > new Version("0.0.0.0")) {

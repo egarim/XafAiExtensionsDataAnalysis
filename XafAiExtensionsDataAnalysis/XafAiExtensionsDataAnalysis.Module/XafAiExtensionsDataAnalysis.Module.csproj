@@ -14,12 +14,14 @@
     <None Remove="Examples\Reports\CustomerBuyingBehaviourAnalysis\Prompt.txt" />
     <None Remove="Examples\Reports\CustomerBuyingBehaviourAnalysis\request.json" />
     <None Remove="Model.DesignedDiffs.xafml" />
+    <None Remove="Prompts\AnalysisGeneratorAISystemPrompt.txt" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Examples\Reports\CustomerBuyingBehaviourAnalysis\Image.jpg" />
     <EmbeddedResource Include="Examples\Reports\CustomerBuyingBehaviourAnalysis\Prompt.txt" />
     <EmbeddedResource Include="Examples\Reports\CustomerBuyingBehaviourAnalysis\request.json" />
     <EmbeddedResource Include="Model.DesignedDiffs.xafml" />
+    <EmbeddedResource Include="Prompts\AnalysisGeneratorAISystemPrompt.txt" />
     <EmbeddedResource Include="Prompts\ReportGeneratorAISystemPrompt.txt" />
   </ItemGroup>
   <ItemGroup>

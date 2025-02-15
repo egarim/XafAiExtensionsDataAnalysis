@@ -1,10 +1,12 @@
-using DevExpress.XtraReports.UI;
-using System.Drawing;
-using System.Collections;
-using System.Linq.Expressions;
 using DevExpress.DataAccess.ObjectBinding;
-using DevExpress.Persistent.Base.ReportsV2;
 using DevExpress.ExpressApp;
+using DevExpress.Persistent.Base.ReportsV2;
+using DevExpress.XtraReports.UI;
+using DevExpress.XtraReports.Wizards;
+using System.Collections;
+using System.Drawing;
+using System.Linq.Expressions;
+using System.Text.Json;
 
 namespace XafAiExtensionsDataAnalysis.Module.Ai.Reports
 {
@@ -12,7 +14,89 @@ namespace XafAiExtensionsDataAnalysis.Module.Ai.Reports
     public class RuntimeReportBuilder
     {
 
+        public static string CreateCustomerBehaviorReport()
+        {
+            var request = new ReportConfiguration
+            {
+                ReportTitle = "Customer Buying Behavior Analysis",
+                DataSource = "ReportsTest.Customer",
 
+                // Define calculated fields with corrected expressions
+                CalculatedFields = new[]
+                {
+            new CalculatedFieldOptionsDTO
+            {
+                Name = "PurchaseCount",
+                Expression = "[Invoices].Count()",
+                DataMember = null,
+                FormatString = "{0:N0}"
+            },
+            new CalculatedFieldOptionsDTO
+            {
+                Name = "TotalPurchaseValue",
+                Expression = "[Invoices].Sum([TotalAmount])",
+                DataMember = null,
+                FormatString = "{0:C2}"
+            },
+            new CalculatedFieldOptionsDTO
+            {
+                Name = "AverageOrderValue",
+                Expression = "Iif([Invoices].Count() > 0, [Invoices].Sum([TotalAmount]) / [Invoices].Count(), 0)",
+                DataMember = null,
+                FormatString = "{0:C2}"
+            }
+        },
+
+                // Define columns to display
+                Columns = new[]
+                {
+            new ReportColumnDTO { FieldName = "Name", HeaderText = "Customer Name", Width = 200 },
+            new ReportColumnDTO { FieldName = "Country.Name", HeaderText = "Country", Width = 150 },
+            new ReportColumnDTO { FieldName = "PurchaseCount", HeaderText = "Total Orders", Width = 120 },
+            new ReportColumnDTO { FieldName = "TotalPurchaseValue", HeaderText = "Lifetime Value", Width = 150 },
+            new ReportColumnDTO { FieldName = "AverageOrderValue", HeaderText = "Avg Order Value", Width = 150 }
+        },
+
+                // Group by country for geographical analysis
+                Grouping = new GroupingOptionsDTO
+                {
+                    FieldName = "Country.Name",
+                    ShowGroupSummary = true
+                },
+
+                // Summary calculations
+                SummaryOptions = new[]
+                {
+            new SummaryOptionsDTO
+            {
+                FieldName = "PurchaseCount",
+                Function = "Sum",
+                ShowInGroupFooter = true,
+                ShowInReportFooter = true
+            },
+            new SummaryOptionsDTO
+            {
+                FieldName = "TotalPurchaseValue",
+                Function = "Sum",
+                ShowInGroupFooter = true,
+                ShowInReportFooter = true
+            },
+            new SummaryOptionsDTO
+            {
+                FieldName = "AverageOrderValue",
+                Function = "Avg",
+                ShowInGroupFooter = true,
+                ShowInReportFooter = true
+            }
+        }
+            };
+
+
+
+            //serialize ormStructure to json formatted string
+            var json = JsonSerializer.Serialize(request, new JsonSerializerOptions { WriteIndented = true });
+            return json;
+        }
         public RuntimeReportBuilder()
         {
             
@@ -24,7 +108,7 @@ namespace XafAiExtensionsDataAnalysis.Module.Ai.Reports
 
             return dataSource;
         }
-        public XtraReport CreateReport(ReportRequest request)
+        public XtraReport CreateReport(ReportConfiguration request)
         {
             // Call the original CreateReport method with mapped parameters
             IEnumerable<ReportColumn> columns = request.Columns?.Select(c => new ReportColumn

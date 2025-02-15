@@ -18,6 +18,7 @@ namespace XafAiExtensionsDataAnalysis.Module.BusinessObjects
         { }
 
 
+        SystemPrompt reportGeneratorAI;
         string prompt;
 
         [Size(SizeAttribute.Unlimited)]
@@ -26,6 +27,11 @@ namespace XafAiExtensionsDataAnalysis.Module.BusinessObjects
             get => prompt;
             set => SetPropertyValue(nameof(Prompt), ref prompt, value);
         }
-
+        
+        public SystemPrompt ReportGeneratorAI
+        {
+            get => reportGeneratorAI;
+            set => SetPropertyValue(nameof(ReportGeneratorAI), ref reportGeneratorAI, value);
+        }
     }
 }

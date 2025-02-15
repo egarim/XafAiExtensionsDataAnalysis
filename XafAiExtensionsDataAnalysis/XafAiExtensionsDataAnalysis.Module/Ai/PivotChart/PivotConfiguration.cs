@@ -10,9 +10,9 @@ namespace XafAiExtensionsDataAnalysis.Module.Ai.PivotChart
     [Description("Represents a configuration for a pivot chart analysis, defining data structure and visualization settings")]
     public class PivotConfiguration
     {
-        [Description("Unique identifier for the pivot configuration")]
-        [JsonPropertyName("id")]
-        public string Id { get; set; } = Guid.NewGuid().ToString();
+        [Description("The full name of the Orm Entity type that is going to be the entry point for this pivot")]
+        [JsonPropertyName("ormEntityTypeFullName")]
+        public string OrmEntityTypeFullName { get; set; }
 
         [Description("Display name of the pivot configuration")]
         [JsonPropertyName("name")]

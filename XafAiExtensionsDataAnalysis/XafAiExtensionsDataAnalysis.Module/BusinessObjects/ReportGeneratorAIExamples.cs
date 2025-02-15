@@ -15,10 +15,10 @@ using System.Drawing;
 
 namespace XafAiExtensionsDataAnalysis.Module.BusinessObjects {
     
-    public class ReportGeneratorAIExample : BaseObject { // Inherit from a different class to provide a custom primary key, concurrency and deletion behavior, etc. (https://docs.devexpress.com/eXpressAppFramework/113146/business-model-design-orm/business-model-design-with-xpo/base-persistent-classes).
+    public class PromptExample : BaseObject { // Inherit from a different class to provide a custom primary key, concurrency and deletion behavior, etc. (https://docs.devexpress.com/eXpressAppFramework/113146/business-model-design-orm/business-model-design-with-xpo/base-persistent-classes).
         // Use CodeRush to create XPO classes and properties with a few keystrokes.
         // https://docs.devexpress.com/CodeRushForRoslyn/118557
-        public ReportGeneratorAIExample(Session session)
+        public PromptExample(Session session)
             : base(session) {
         }
         public override void AfterConstruction() {
@@ -26,12 +26,13 @@ namespace XafAiExtensionsDataAnalysis.Module.BusinessObjects {
             // Place your initialization code here (https://docs.devexpress.com/eXpressAppFramework/112834/getting-started/in-depth-tutorial-winforms-webforms/business-model-design/initialize-a-property-after-creating-an-object-xpo?v=22.1).
         }
 
+        SystemPrompt systemPrompt;
         string name;
-        ReportGeneratorAI reportGeneratorAi;
+
         Image reportExample;
         string prompt;
         string json;
-        
+
         [Size(SizeAttribute.DefaultStringMappingFieldSize)]
         public string Name
         {
@@ -59,11 +60,12 @@ namespace XafAiExtensionsDataAnalysis.Module.BusinessObjects {
             set => SetPropertyValue(nameof(ReportExample), ref reportExample, value);
         }
 
-        [Association("ReportGeneratorAI-ReportGeneratorExamples")]
-        public ReportGeneratorAI ReportGeneratorAi
+        
+        [Association("SystemPrompt-PromptExamples")]
+        public SystemPrompt SystemPrompt
         {
-            get => reportGeneratorAi;
-            set => SetPropertyValue(nameof(ReportGeneratorAi), ref reportGeneratorAi, value);
+            get => systemPrompt;
+            set => SetPropertyValue(nameof(SystemPrompt), ref systemPrompt, value);
         }
     }
 }

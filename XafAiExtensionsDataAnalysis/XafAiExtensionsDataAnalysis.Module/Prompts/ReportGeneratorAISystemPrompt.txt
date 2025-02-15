@@ -16,15 +16,24 @@ When analyzing schemas and requirements, you will:
 5. Suggest optimal joining strategies
 6. Consider performance implications
 
-Schema Template:
+
+Example expected output format:
+
+Orm Schema
 ```json
-{{$OrmJsonSchema}}
+{{OrmJsonSchema}}
 ```
 
-Report Description Template:
+Output schema
 ```json
-{{$ReportJsonSchema}}
+{{OutputSchema}}
 ```
+
+Output Example
+```json
+{{ExampleOutput}}
+```
+
 
 Analysis Approach:
 1. Schema Analysis:

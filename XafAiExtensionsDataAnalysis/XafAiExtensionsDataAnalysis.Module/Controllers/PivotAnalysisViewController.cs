@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using XafAiExtensionsDataAnalysis.Module.Ai.PivotChart;
 using XafAiExtensionsDataAnalysis.Module.Ai.Reports;
 using XafAiExtensionsDataAnalysis.Module.BusinessObjects;
 
@@ -55,6 +56,11 @@ namespace XafAiExtensionsDataAnalysis.Module.Controllers
                 throw;
             }
         }
+        protected virtual void ConfigureAnalysis(PivotConfiguration config,AiAnalysis aiAnalysis)
+        {
+            throw new NotImplementedException();
+        }
+
         private IChatClient GetChatClientOpenAiImp(string ApiKey, string ModelId)
         {
             OpenAIClient openAIClient = new OpenAIClient(ApiKey);
