@@ -8,10 +8,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using XafAiExtensionsDataAnalysis.Module.Ai.PivotChart;
 using XafAiExtensionsDataAnalysis.Module.Ai.Reports;
 using XafAiExtensionsDataAnalysis.Module.BusinessObjects;
+using static DevExpress.XtraPrinting.Native.ExportOptionsPropertiesNames;
 
 namespace XafAiExtensionsDataAnalysis.Module.Controllers
 {
@@ -45,12 +47,18 @@ namespace XafAiExtensionsDataAnalysis.Module.Controllers
 
 
                 chatMessages.Add(new ChatMessage(ChatRole.System, CurrentAiAnalysis.SystemPrompt.Text));
-                //chatMessages.Add(new ChatMessage(ChatRole.System, $"The pivot MUST be generated using this Schema {businessSchema.Schema}, the datasource must be one of the entities on this schema, use the TypeFullName property to set the value of the datasource"));
+                chatMessages.Add(new ChatMessage(ChatRole.System, $"The pivot MUST be generated using this Schema {businessSchema.Schema}, the datasource must be one of the entities on this schema, use the EntityFullName property to set the value of the OrmEntityTypeFullName"));
                 chatMessages.Add(new ChatMessage(ChatRole.User, CurrentAiAnalysis.Prompt));
 
 
-
+            
                 var AiAnswer = await CurrentClient.CompleteAsync<PivotConfiguration>(chatMessages);
+                Type type = this.Application.TypesInfo.PersistentTypes.FirstOrDefault(t => t.FullName == AiAnswer.Result.EntityFullName).Type;
+                CurrentAiAnalysis.DataType = type;
+                CurrentAiAnalysis.Name = AiAnswer.Result.Name;
+                CurrentAiAnalysis.GeneratedOutput = AiAnswer.Result.ToString();
+                CurrentAiAnalysis.GeneratedOutput = JsonSerializer.Serialize(AiAnswer.Result);
+                CurrentAiAnalysis.Log = "Analysis Successfully Generated" + System.Environment.NewLine + JsonSerializer.Serialize(AiAnswer.Usage);
                 this.ConfigureAnalysis(AiAnswer.Result, CurrentAiAnalysis);
             }
             catch (Exception)

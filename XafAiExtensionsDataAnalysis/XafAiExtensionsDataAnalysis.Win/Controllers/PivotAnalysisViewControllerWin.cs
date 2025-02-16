@@ -68,56 +68,73 @@ namespace XafAiExtensionsDataAnalysis.Win.Controllers
         protected override void ConfigureAnalysis(PivotConfiguration config, AiAnalysis aiAnalysis)
         {
             //https://docs.devexpress.com/eXpressAppFramework/113050/analytics/pivot-chart/distribute-an-analysis-with-the-application
-            AnalysisControlWin control = this.View.GetItems<IAnalysisEditorWin>()[0].Control;
-            //IAnalysisControl control= new AnalysisControlWin();
-            control.DataSource = new AnalysisDataSource(aiAnalysis, this.View.ObjectSpace.GetObjects(typeof(InvoiceHeader)));
+
+
+
+
+            var analysisEditorWin = this.View.GetItems<IAnalysisEditorWin>()[0] as AnalysisEditorWin;
+
+            AnalysisControlWin control = analysisEditorWin.Control;
+         
+            control.DataSource = new AnalysisDataSource(aiAnalysis, this.View.ObjectSpace.GetObjects(aiAnalysis.DataType));
             control.FieldBuilder.RebuildFields();
-            control.
-            try
+
+            
+
+            var store = new PivotGridControlSettingsStore(control.PivotGrid);
+
+            if (aiAnalysis != null && !PivotGridSettingsHelper.HasPivotGridSettings(aiAnalysis))
             {
-
-                // Configure Data Fields
-                foreach (var fieldConfig in config.DataFields)
+                try
                 {
-                    var field = CreatePivotField(fieldConfig, control.Fields);
-                    field.Area = PivotArea.DataArea;
-                    field.AreaIndex = fieldConfig.AreaIndex;
+
+                    // Configure Data Fields
+                    foreach (var fieldConfig in config.DataFields)
+                    {
+                        var field = CreatePivotField(fieldConfig, control.Fields);
+                        field.Area = PivotArea.DataArea;
+                        field.AreaIndex = fieldConfig.AreaIndex;
+
+                    }
+
+                    // Configure Row Fields
+                    foreach (var fieldConfig in config.RowFields)
+                    {
+                        var field = CreatePivotField(fieldConfig, control.Fields);
+                        field.Area = PivotArea.RowArea;
+                        field.AreaIndex = fieldConfig.AreaIndex;
+
+                    }
+
+                    // Configure Column Fields
+                    foreach (var fieldConfig in config.ColumnFields)
+                    {
+                        var field = CreatePivotField(fieldConfig, control.Fields);
+                        field.Area = PivotArea.ColumnArea;
+                        field.AreaIndex = fieldConfig.AreaIndex;
+
+                    }
+
+                    // Configure Filter Fields
+                    foreach (var fieldConfig in config.FilterFields)
+                    {
+                        var field = CreatePivotField(fieldConfig, control.Fields);
+                        field.Area = PivotArea.FilterArea;
+                        field.AreaIndex = fieldConfig.AreaIndex;
+
+                    }
+
+                    PivotGridSettingsHelper.SavePivotGridSettings(store, aiAnalysis);
+
 
                 }
-
-                // Configure Row Fields
-                foreach (var fieldConfig in config.RowFields)
+                catch (Exception ex)
                 {
-                    var field = CreatePivotField(fieldConfig, control.Fields);
-                    field.Area = PivotArea.RowArea;
-                    field.AreaIndex = fieldConfig.AreaIndex;
-
+                    throw new UserFriendlyException($"Error configuring pivot grid: {ex.Message}");
                 }
-
-                // Configure Column Fields
-                foreach (var fieldConfig in config.ColumnFields)
-                {
-                    var field = CreatePivotField(fieldConfig, control.Fields);
-                    field.Area = PivotArea.ColumnArea;
-                    field.AreaIndex = fieldConfig.AreaIndex;
-
-                }
-
-                // Configure Filter Fields
-                foreach (var fieldConfig in config.FilterFields)
-                {
-                    var field = CreatePivotField(fieldConfig, control.Fields);
-                    field.Area = PivotArea.FilterArea;
-                    field.AreaIndex = fieldConfig.AreaIndex;
-
-                }
-
-
             }
-            catch (Exception ex)
-            {
-                throw new UserFriendlyException($"Error configuring pivot grid: {ex.Message}");
-            }
+
+           
 
         }
         private void ConfigurePivotGrid(PivotConfiguration config, IObjectSpace objectSpace, AnalysisControlWin control)
