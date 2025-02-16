@@ -42,10 +42,9 @@ namespace XafAiExtensionsDataAnalysis.Win.Controllers
 
         protected override void ConfigureAnalysis(PivotConfiguration config, AiAnalysis aiAnalysis)
         {
+
+           ShowMessage("Configuring Analysis", "Please Wait", InformationType.Info);
             //https://docs.devexpress.com/eXpressAppFramework/113050/analytics/pivot-chart/distribute-an-analysis-with-the-application
-
-
-
 
             var analysisEditorWin = this.View.GetItems<IAnalysisEditorWin>()[0] as AnalysisEditorWin;
 
@@ -107,6 +106,7 @@ namespace XafAiExtensionsDataAnalysis.Win.Controllers
                 {
                     throw new UserFriendlyException($"Error configuring pivot grid: {ex.Message}");
                 }
+                ShowMessage("Analysis Configured", "Analysis Configured Successfully", InformationType.Success);
             }
 
            
@@ -143,16 +143,17 @@ namespace XafAiExtensionsDataAnalysis.Win.Controllers
                 field.SortOrder = (DevExpress.XtraPivotGrid.PivotSortOrder)fieldConfig.SortOrder.Value;
             }
 
+            //TODO fix layout settings
             // Apply layout settings
-            if (fieldConfig.LayoutSettings != null)
-            {
-                if (!string.IsNullOrEmpty(fieldConfig.LayoutSettings.Width))
-                {
-                    field.Width = int.Parse(fieldConfig.LayoutSettings.Width);
-                }
-                //TODO fix
-                //field.CanDrag = fieldConfig.LayoutSettings.AllowDrag;
-            }
+            //if (fieldConfig.LayoutSettings != null)
+            //{
+            //    if (!string.IsNullOrEmpty(fieldConfig.LayoutSettings.Width))
+            //    {
+            //        field.Width = int.Parse(fieldConfig.LayoutSettings.Width);
+            //    }
+            //    //TODO fix
+            //    //field.CanDrag = fieldConfig.LayoutSettings.AllowDrag;
+            //}
 
             // Apply filter settings
             if (fieldConfig.FilterSettings != null)

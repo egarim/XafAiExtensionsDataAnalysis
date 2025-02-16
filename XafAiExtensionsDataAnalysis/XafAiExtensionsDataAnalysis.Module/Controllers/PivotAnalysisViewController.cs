@@ -31,12 +31,11 @@ namespace XafAiExtensionsDataAnalysis.Module.Controllers
          string OpenAiModelId = "gpt-4o";
         private async void GenerateAnalysisFromPrompt_Execute(object sender, SimpleActionExecuteEventArgs e)
         {
-
-
+            
             try
             {
 
-
+                ShowMessage("Generating Analysis", "Please Wait", InformationType.Info);    
                 var CurrentAiAnalysis = this.View.CurrentObject as AiAnalysis;
                 var businessSchema = this.ObjectSpace.FindObject<BusinessSchema>(null);
                 CurrentClient = GetChatClientOpenAiImp(Environment.GetEnvironmentVariable("OpenAiTestKey"), OpenAiModelId);
@@ -51,7 +50,7 @@ namespace XafAiExtensionsDataAnalysis.Module.Controllers
                 chatMessages.Add(new ChatMessage(ChatRole.User, CurrentAiAnalysis.Prompt));
 
 
-            
+
                 var AiAnswer = await CurrentClient.CompleteAsync<PivotConfiguration>(chatMessages);
                 Type type = this.Application.TypesInfo.PersistentTypes.FirstOrDefault(t => t.FullName == AiAnswer.Result.EntityFullName).Type;
                 CurrentAiAnalysis.DataType = type;
@@ -67,6 +66,19 @@ namespace XafAiExtensionsDataAnalysis.Module.Controllers
                 throw;
             }
         }
+
+        protected void ShowMessage(string Caption,string Message, InformationType informationType)
+        {
+            MessageOptions options = new MessageOptions();
+            options.Duration = 2000;
+            options.Message = Message;
+            options.Type = informationType;
+            options.Web.Position = InformationPosition.Right;
+            options.Win.Caption = Caption;
+            options.Win.Type = WinMessageType.Toast;
+            Application.ShowViewStrategy.ShowMessage(options);
+        }
+
         protected virtual void ConfigureAnalysis(PivotConfiguration config,AiAnalysis aiAnalysis)
         {
             throw new NotImplementedException();
