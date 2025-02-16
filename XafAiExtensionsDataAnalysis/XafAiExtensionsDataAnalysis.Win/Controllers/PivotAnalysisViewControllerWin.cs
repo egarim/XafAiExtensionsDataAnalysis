@@ -33,10 +33,6 @@ namespace XafAiExtensionsDataAnalysis.Win.Controllers
            
 
         }
-        private void GeneratePivot_Execute(object sender, SimpleActionExecuteEventArgs e)
-        {
-            SetupPivotGrid();
-        }
 
         protected override void OnActivated()
         {
@@ -44,27 +40,6 @@ namespace XafAiExtensionsDataAnalysis.Win.Controllers
 
         }
 
-        private void SetupPivotGrid()
-        {
-            // Create sample configuration (in real app, you would load this from somewhere)
-            var config = PivotConfigurationHelper.CreateSampleSalesAnalysisConfig();
-            var analysis = this.View.CurrentObject as Analysis;
-
-            if (analysis.DataType == null)
-            {
-                analysis.DataType = typeof(InvoiceHeader);
-            }
-            AnalysisControlWin control = this.View.GetItems<IAnalysisEditorWin>()[0].Control;
-            //IAnalysisControl control= new AnalysisControlWin();
-            control.DataSource = new AnalysisDataSource(analysis, this.View.ObjectSpace.GetObjects(typeof(InvoiceHeader)));
-            control.FieldBuilder.RebuildFields();
-
-
-
-            // Configure the pivot grid using our configuration
-            ConfigurePivotGrid(config, this.ObjectSpace, control);
-            this.View.ObjectSpace.CommitChanges();
-        }
         protected override void ConfigureAnalysis(PivotConfiguration config, AiAnalysis aiAnalysis)
         {
             //https://docs.devexpress.com/eXpressAppFramework/113050/analytics/pivot-chart/distribute-an-analysis-with-the-application
@@ -137,54 +112,7 @@ namespace XafAiExtensionsDataAnalysis.Win.Controllers
            
 
         }
-        private void ConfigurePivotGrid(PivotConfiguration config, IObjectSpace objectSpace, AnalysisControlWin control)
-        {
-            try
-            {
-
-                // Configure Data Fields
-                foreach (var fieldConfig in config.DataFields)
-                {
-                    var field = CreatePivotField(fieldConfig, control.Fields);
-                    field.Area = PivotArea.DataArea;
-                    field.AreaIndex = fieldConfig.AreaIndex;
-
-                }
-
-                // Configure Row Fields
-                foreach (var fieldConfig in config.RowFields)
-                {
-                    var field = CreatePivotField(fieldConfig, control.Fields);
-                    field.Area = PivotArea.RowArea;
-                    field.AreaIndex = fieldConfig.AreaIndex;
-
-                }
-
-                // Configure Column Fields
-                foreach (var fieldConfig in config.ColumnFields)
-                {
-                    var field = CreatePivotField(fieldConfig, control.Fields);
-                    field.Area = PivotArea.ColumnArea;
-                    field.AreaIndex = fieldConfig.AreaIndex;
-
-                }
-
-                // Configure Filter Fields
-                foreach (var fieldConfig in config.FilterFields)
-                {
-                    var field = CreatePivotField(fieldConfig, control.Fields);
-                    field.Area = PivotArea.FilterArea;
-                    field.AreaIndex = fieldConfig.AreaIndex;
-
-                }
-
-
-            }
-            catch (Exception ex)
-            {
-                throw new UserFriendlyException($"Error configuring pivot grid: {ex.Message}");
-            }
-        }
+   
 
         private PivotGridFieldBase CreatePivotField(PivotField fieldConfig, PivotGridFieldCollectionBase Fields)
         {
@@ -198,12 +126,6 @@ namespace XafAiExtensionsDataAnalysis.Win.Controllers
             }
             field.Caption = fieldConfig.Caption;
             field.Name = $"field{fieldConfig.PropertyName.Replace(".", "_")}";
-            //var field = new PivotGridField
-            //{
-            //    FieldName = fieldConfig.PropertyName,
-            //    Caption = fieldConfig.Caption,
-            //    Name = $"field{fieldConfig.PropertyName.Replace(".", "_")}"
-            //};
 
             // Configure summary type
             field.SummaryType = ConvertToDevExpressSummaryType(fieldConfig.SummaryType);
